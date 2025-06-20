@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>일정 편집 - Momentum</title>
+  
+  <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="" />
+  <link rel="stylesheet" as="style" onload="this.rel='stylesheet'" 
+        href="https://fonts.googleapis.com/css2?display=swap&amp;family=Manrope%3Awght%40400%3B500%3B700%3B800&amp;family=Noto+Sans%3Awght%40400%3B500%3B700%3B900" />
+  
+  <link rel="icon" type="image/x-icon" href="data:image/x-icon;base64," />
+
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      font-family: 'Manrope', 'Noto Sans', sans-serif;
+      background-color: #121217;
+      color: white;
+      box-sizing: border-box;
+    }
+
+    *, *::before, *::after {
+        box-sizing: border-box;
+    }
+
+    .design-root {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      width: 100%;
+    }
+
+    .layout-container {
+      display: flex;
+      flex-direction: column;
+      flex-grow: 1;
+      width: 100%;
+    }
+
+    .main-content {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2rem;
+      padding: 2rem;
+      justify-content: center;
+      align-items: flex-start;
+      flex-grow: 1;
+    }
+
+    /* --- 헤더 --- */
+    .main-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.75rem 2.5rem;
+      border-bottom: 1px solid #2a2c37;
+      white-space: nowrap;
+    }
+    
+    .logo-container {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .logo-container .logo-icon {
+      width: 1rem;
+      height: 1rem;
+    }
+
+    .logo-container .logo-title {
+      font-size: 1.125rem;
+      font-weight: 700;
+      letter-spacing: -0.015em;
+    }
+    
+    .header-nav {
+      display: flex;
+      flex: 1;
+      justify-content: flex-end;
+      gap: 2rem;
+      align-items: center;
+      position: relative;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 2.25rem;
+    }
+
+    .nav-links a {
+      font-size: 0.875rem;
+      font-weight: 500;
+      text-decoration: none;
+      color: white;
+      cursor: pointer;
+      transition: color 0.2s ease-in-out;
+    }
+
+    .nav-links a:hover {
+      color: #9fa3b7;
+    }
+    
+    .profile-image {
+      width: 2.5rem;
+      height: 2.5rem;
+      border-radius: 50%;
+      background-size: cover;
+      background-position: center;
+      cursor: pointer;
+    }
+    
+    /* --- 알림 팝업 --- */
+    .notification-popup {
+          position: absolute;
+          top: calc(100% + 10px);
+          right: 0;
+          width: 320px;
+          background-color: #1f2028;
+          border-radius: 0.75rem;
+          box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+          border: 1px solid #3a3c47;
+          z-index: 2000;
+          padding: 0.5rem;
+          display: none;
+          opacity: 0;
+          transform: translateY(10px);
+          transition: opacity 0.3s ease, transform 0.3s ease;
+      }
+
+    .notification-popup.visible {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    .notification-header {
+        font-size: 1rem;
+        font-weight: 600;
+        padding: 0.75rem 1rem;
+        border-bottom: 1px solid #3a3c47;
+        color: #e2e2e2;
+    }
+
+    .notification-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem;
+        border-bottom: 1px solid #2a2c37;
+        text-decoration: none;
+        color: inherit;
+        transition: background-color 0.2s ease;
+    }
+
+    .notification-item:last-child {
+        border-bottom: none;
+    }
+
+    .notification-item:hover {
+        background-color: #2a2c37;
+    }
+
+    .notification-item-name {
+        font-size: 0.875rem;
+        font-weight: 500;
+        color: #f0f0f0;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 160px;
+    }
+
+    .notification-item-status {
+        font-size: 0.875rem;
+        padding: 0.25rem 0.6rem;
+        border-radius: 9999px;
+        font-weight: 600;
+        flex-shrink: 0;
+    }
+
+    .notification-item-status.before {
+        background-color: rgba(59, 130, 246, 0.2);
+        color: #60a5fa;
+    }
+
+    .notification-item-status.in-progress {
+        background-color: rgba(16, 185, 129, 0.2);
+        color: #34d399;
+    }
+
+    .notification-item-status.after {
+        background-color: rgba(74, 74, 82, 0.5);
+        color: #a2a5b4;
+    }
+    
+    /* --- 페이지 섹션 --- */
+    .calendar-section {
+      display: none !important; /* 수정 모드에서는 사용하지 않으므로 완전히 숨김 */
+    }
+
+    .form-section {
+      flex: 0 1 640px;
+      max-width: 640px;
+      width: 100%;
+      background: rgba(26,27,35,0.85);
+      backdrop-filter: blur(6px);
+      border-radius: 1.25rem;
+      padding: 2.5rem 3rem;
+      box-shadow: 0 10px 32px rgba(0,0,0,0.45);
+    }
+
+    .section-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin-bottom: 1.5rem;
+    }
+
+    /* --- 캘린더 --- */
+    .calendar-wrapper {
+        background-color: #1a1b23;
+        border-radius: 1rem;
+        padding: 1.5rem;
+    }
+    
+    .calendar-container {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      align-items: center;
+    }
+
+    .calendar {
+      background-color: #1a1b23;
+      border-radius: 1rem;
+      padding: 1rem;
+      border: 1px solid #2a2c37;
+      width: 100%;
+      max-width: 320px;
+      min-width: 280px;
+    }
+
+    .calendar-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1rem;
+    }
+
+    .calendar-header button {
+      background: #2a2c37;
+      border: none;
+      color: #9fa3b7;
+      cursor: pointer;
+      width: 2rem;
+      height: 2rem;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background-color 0.2s;
+    }
+
+    .calendar-header button:hover {
+      background-color: #3a3c47;
+    }
+
+    .month-year {
+      font-size: 1.125rem;
+      font-weight: 600;
+      text-align: center;
+    }
+
+    .calendar-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 0.25rem;
+    }
+
+    .day-header {
+      text-align: center;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: #9fa3b7;
+      padding-bottom: 0.5rem;
+    }
+
+    .calendar-day {
+      background: none;
+      border: none;
+      padding: 0;
+      border-radius: 0.5rem;
+      cursor: pointer;
+      position: relative;
+      color: white;
+      aspect-ratio: 1 / 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background-color 0.2s ease-in-out;
+    }
+
+    .calendar-day .day-number {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 0.5rem;
+      transition: all 0.2s;
+    }
+    
+    .calendar-day:hover:not(.in-range):not(.range-start):not(.range-end) .day-number{
+      background-color: #2a2c37;
+    }
+
+    .calendar-day.other-month .day-number {
+      color: #6b7280;
+    }
+    
+    .calendar-day .day-number.selected {
+      background-color: #3b82f6;
+      color: white;
+      font-weight: 600;
+    }
+
+    .calendar-day.in-range {
+      background-color: rgba(59, 130, 246, 0.25);
+      border-radius: 0;
+    }
+    
+    .calendar-day.range-start {
+        background-color: rgba(59, 130, 246, 0.25);
+        border-radius: 0.5rem 0 0 0.5rem;
+    }
+
+    .calendar-day.range-end {
+        background-color: rgba(59, 130, 246, 0.25);
+        border-radius: 0 0.5rem 0.5rem 0;
+    }
+    
+    .calendar-day.range-start .day-number,
+    .calendar-day.range-end .day-number {
+        background-color: #3b82f6;
+    }
+
+    .form-group {
+      margin-bottom: 1.25rem;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 0.875rem;
+      font-weight: 500;
+      margin-bottom: 0.5rem;
+      color: #9fa3b7;
+    }
+
+    .form-input, .form-select {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      background-color: #2a2c37;
+      border: 1px solid #3a3d4a;
+      border-radius: 0.5rem;
+      color: #f0f0f0;
+      font-size: 1rem;
+      font-weight: 500;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      box-sizing: border-box; /* padding과 border를 너비에 포함 */
+    }
+    
+    .form-input:focus, .form-select:focus {
+      outline: none;
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.5);
+    }
+
+    .form-input::placeholder {
+      color: #6b7280;
+    }
+    
+    .time-inputs-container {
+        display: grid;
+        grid-template-columns: 1fr auto 1fr;
+        gap: 0.75rem;
+        align-items: center;
+    }
+
+    #end-time:disabled {
+        background-color: #1a1b23;
+        opacity: 0.7;
+    }
+
+    /* --- Time Input 테마 스타일링 --- */
+    input[type="time"] {
+        color-scheme: dark; /* 브라우저에 다크 모드 UI를 사용하도록 힌트를 줌 */
+        font-family: 'Poppins', sans-serif;
+        font-size: 1rem;
+        font-weight: 500;
+        color: #f0f0f0;
+    }
+
+    input[type="time"]::-webkit-calendar-picker-indicator {
+        filter: invert(1); /* 아이콘 색상을 반전시켜 어두운 배경에 잘 보이게 함 */
+        cursor: pointer;
+        opacity: 0.8;
+        transition: opacity 0.2s;
+    }
+
+    input[type="time"]::-webkit-calendar-picker-indicator:hover {
+        opacity: 1;
+    }
+
+    /* --- 아이콘 선택 --- */
+    .icon-select-group {
+      display: flex;
+      gap: 0.75rem;
+        justify-content: flex-start;
+        margin-top: 0.5rem;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        padding-bottom: 0.75rem;
+    }
+    
+    .icon-select-group::-webkit-scrollbar {
+        height: 8px;
+    }
+    .icon-select-group::-webkit-scrollbar-track {
+        background: #2a2c37;
+        border-radius: 4px;
+    }
+    .icon-select-group::-webkit-scrollbar-thumb {
+        background: #3a3d4a;
+        border-radius: 4px;
+    }
+    .icon-select-group::-webkit-scrollbar-thumb:hover {
+        background: #4a4c5a;
+    }
+
+    .icon-select-label {
+        cursor: pointer;
+        padding: 0.75rem;
+        border: 2px solid transparent;
+        border-radius: 0.75rem;
+        background-color: #2a2c37;
+        transition: all 0.2s;
+    }
+    
+    .icon-select-label svg {
+        width: 1.75rem;
+        height: 1.75rem;
+        display: block;
+    }
+
+    .icon-select-label:hover {
+        background-color: #3a3d4a;
+    }
+
+    .icon-select-input {
+        display: none;
+    }
+    
+    .icon-select-input:checked + .icon-select-label {
+        border-color: #3b82f6;
+        background-color: #1d4ed8;
+    }
+    
+    /* --- 버튼 --- */
+    .button-group {
+      margin-top: 2rem;
+        display: flex;
+        gap: 0.75rem;
+    }
+
+    .form-button {
+      flex: 1;
+      padding: 0.875rem 1rem;
+      border: none;
+      border-radius: 0.5rem;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.2s, transform 0.1s;
+    }
+    
+    .form-button:active {
+      transform: scale(0.98);
+    }
+
+    .primary-button {
+      background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+      color: #fff;
+    }
+    .primary-button:hover {
+      background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+    }
+
+    .secondary-button {
+      background-color: #2a2c37;
+      color: white;
+    }
+    .secondary-button:hover {
+      background-color: #3a3d4a;
+    }
+
+    #note-input {
+        resize: vertical;
+        min-height: 80px;
+    }
+
+    #note-input::placeholder {
+        color: #6b7280;
+    }
+
+    /* 모든 폼 관련 요소에 body의 폰트 스타일을 명시적으로 상속 */
+    input, select, textarea, button {
+        font-family: inherit;
+        font-size: inherit;
+        font-weight: inherit;
+    }
+
+    h1 {
+        font-size: 2.25rem;
+    }
+
+    .header-button {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 2.5rem;
+      width: 2.5rem;
+      background-color: #2a2c37;
+      border-radius: 9999px;
+      border: 1px solid #2a2c37;
+      color: white;
+      cursor: pointer;
+    }
+
+    .danger-button {
+      background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+      color: #fff;
+    }
+    .danger-button:hover {
+      background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+    }
+
+    /* 메인 콘텐츠 가운데 정렬 */
+    .main-content {
+      justify-content: center;
+    }
+
+  </style>
+</head>
+<body>
+  <div class="design-root">
+    <div class="layout-container">
+      <header class="main-header">
+        <div class="logo-container">
+          <div class="logo-icon">
+            <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect width="48" height="48" rx="12" fill="#4F46E5"/>
+              <path d="M14 24L22 32L34 16" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M14 24L22 32L34 16" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" opacity="0.3"/>
+            </svg>
+          </div>
+          <h2 class="logo-title">Momentum</h2>
+        </div>
+        <div class="header-nav">
+          <div class="nav-links">
+            <a href="./home.html">홈</a>
+            <a href="./calender.html">캘린더</a>
+            <a href="./todo-list.html">오늘 할 일</a>
+          </div>
+          <button class="header-button" id="notification-bell-button">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20px" height="20px" fill="currentColor" viewBox="0 0 256 256">
+              <path d="M221.8,175.94C216.25,166.38,208,139.33,208,104a80,80,0,1,0-160,0c0,35.34-8.26,62.38-13.81,71.94A16,16,0,0,0,48,200H88.81a40,40,0,0,0,78.38,0H208a16,16,0,0,0,13.8-24.06ZM128,216a24,24,0,0,1-22.62-16h45.24A24,24,0,0,1,128,216ZM48,184c7.7-13.24,16-43.92,16-80a64,64,0,1,1,128,0c0,36.05,8.28,66.73,16,80Z"></path>
+            </svg>
+          </button>
+          <div id="profile-image-container" class="profile-image"></div>
+        </div>
+      </header>
+
+      <main class="main-content">
+        <div class="calendar-section">
+            <h1 class="section-title">날짜 선택</h1>
+            <div class="calendar-wrapper">
+                <div id="calendar-container" class="calendar-container">
+                 </div>
+            </div>
+        </div>
+        
+        <aside class="form-section">
+          <h1 class="section-title">일정 수정 및 삭제</h1>
+          <form id="workout-form">
+            <div class="form-group">
+              <label for="workout-name" class="form-label">이름</label>
+              <input type="text" id="workout-name" class="form-input" placeholder="예: 저녁 조깅" required>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">날짜</label>
+                <input type="text" id="selected-dates" class="form-input" placeholder="달력에서 날짜를 선택하세요" readonly>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">시간</label>
+                <div class="time-inputs-container">
+                    <input type="time" id="start-time" class="form-input" required>
+                    <span>-</span>
+                    <input type="time" id="end-time" class="form-input" required>
+                    </div>
+                </div>
+
+            <div class="form-group">
+                <label class="form-label">아이콘</label>
+                <div class="icon-select-group" id="icon-select-group">
+                    <!-- Icons will be loaded here dynamically -->
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="location" class="form-label">장소</label>
+                <input type="text" id="location" class="form-input" placeholder="50자 이내로 입력하세요" maxlength="50">
+            </div>
+
+            <div class="form-group">
+                <label for="purpose" class="form-label">목적</label>
+                <select id="purpose" class="form-select"></select>
+            </div>
+
+            <div class="form-group">
+                <label for="notification" class="form-label">알림 시간</label>
+                <select id="notification" class="form-select"></select>
+            </div>
+
+            <div class="form-group">
+                <label for="notes" class="form-label">메모</label>
+                <textarea id="notes" class="form-input" placeholder="2000자 이내로 입력하세요" maxlength="2000" rows="4"></textarea>
+            </div>
+
+            <div class="button-group">
+                <button type="button" class="form-button secondary-button" onclick="window.history.back()">취소</button>
+                <button type="submit" class="form-button primary-button">저장</button>
+                <button type="button" id="delete-btn" class="form-button danger-button">삭제</button>
+            </div>
+          </form>
+        </aside>
+      </main>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+        // --- UI 요소 및 URL 파라미터 ---
+        const workoutForm = document.getElementById('workout-form');
+        const urlParams = new URLSearchParams(window.location.search);
+        const workoutId = urlParams.get('id');
+        const workoutDate = urlParams.get('date');
+        
+        // --- 유효성 검사 ---
+        if (!workoutId || !workoutDate) {
+            alert('잘못된 접근입니다. 수정할 일정 정보가 없습니다.');
+            window.location.href = './calender.html';
+            return;
+        }
+
+        let originalWorkoutData = null; // 원본 데이터 저장
+        let iconsData = {}; // 아이콘 데이터 저장
+
+        // --- 데이터 로드 및 폼 채우기 ---
+        try {
+            const response = await fetch('./data/workouts.json');
+            const data = await response.json();
+
+            if (!data.workouts || !data.workouts[workoutDate]) {
+                throw new Error('해당 날짜의 데이터를 찾을 수 없습니다.');
+            }
+            
+            const workoutsOnDate = data.workouts[workoutDate];
+            originalWorkoutData = workoutsOnDate.find(w => w.id == workoutId);
+
+            if (!originalWorkoutData) {
+                throw new Error('해당 ID의 일정을 찾을 수 없습니다.');
+            }
+            
+            populateForm(originalWorkoutData);
+
+        } catch (error) {
+            console.error('일정 데이터 로딩 오류:', error);
+            alert(`일정 정보를 불러오는 데 실패했습니다: ${error.message}`);
+            window.location.href = './calender.html';
+        }
+
+        // --- 아이콘, 목적, 알림 데이터 로드 ---
+        populateSelectsAndIcons();
+
+        // --- 폼 채우기 함수 ---
+        function populateForm(workout) {
+            document.getElementById('workout-name').value = workout.name || '';
+            document.getElementById('selected-dates').value = workout.startDate ? `${workout.startDate} ~ ${workout.endDate}` : workoutDate;
+            document.getElementById('start-time').value = workout.startTime || '';
+            document.getElementById('end-time').value = workout.endTime || '';
+            document.getElementById('location').value = workout.location || '';
+            document.getElementById('notes').value = workout.notes || '';
+        }
+        
+        // --- 동적 컨텐츠(아이콘/Select) 로드 함수 ---
+        async function populateSelectsAndIcons() {
+            await Promise.all([
+                populatePurposeSelect(),
+                populateNotificationSelect(),
+                loadAndRenderIcons()
+            ]);
+            // 모든 데이터가 로드된 후, 저장된 값으로 선택
+            if (originalWorkoutData) {
+                document.getElementById('purpose').value = originalWorkoutData.purpose;
+                document.getElementById('notification').value = originalWorkoutData.notification;
+                const iconRadio = document.querySelector(`.icon-select-input[value="${originalWorkoutData.icon}"]`);
+                if(iconRadio) iconRadio.checked = true;
+            }
+        }
+        
+        async function loadAndRenderIcons() {
+            try {
+                const response = await fetch('./data/icons.json');
+                if (!response.ok) throw new Error('Icons data could not be loaded.');
+                iconsData = await response.json();
+                renderIcons();
+            } catch(error) {
+                console.error("Error loading icons data:", error);
+            }
+        }
+
+        function renderIcons() {
+            const container = document.getElementById('icon-select-group');
+            if (!container || !iconsData.icons) return;
+
+            container.innerHTML = iconsData.icons.map(icon => `
+                <input type="radio" id="icon-${icon.id}" name="workout-icon" value="${icon.name}" class="icon-select-input">
+                <label for="icon-${icon.id}" class="icon-select-label">
+                    <svg viewBox="0 0 256 256"><path fill="currentColor" d="${icon.svgPath}"></path></svg>
+                </label>
+            `).join('');
+        }
+
+        function populatePurposeSelect() {
+            const purposeEl = document.getElementById('purpose');
+            const purposes = ["여행/여가", "공부", "프로그래밍", "운동", "휴식", "약속", "기타"];
+            purposeEl.innerHTML = purposes.map(p => `<option value="${p}">${p}</option>`).join('');
+        }
+
+        function populateNotificationSelect() {
+            const el = document.getElementById('notification');
+            if (!el) return;
+
+            el.innerHTML = '<option value="">알림 없음</option>';
+            const options = [5, 10, 15, 30, 45, 60];
+            options.forEach(min => {
+                el.innerHTML += `<option value="${min}">${min}분 전</option>`;
+            });
+        }
+
+        // --- 저장 버튼 이벤트 리스너 ---
+        workoutForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const updatedWorkout = {
+                name: document.getElementById('workout-name').value,
+                startTime: document.getElementById('start-time').value,
+                endTime: document.getElementById('end-time').value,
+                icon: document.querySelector('input[name="workout-icon"]:checked').value,
+                location: document.getElementById('location').value,
+                purpose: document.getElementById('purpose').value,
+                notification: document.getElementById('notification').value,
+                notes: document.getElementById('notes').value,
+            };
+
+            try {
+                const response = await fetch('/api/workout', {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id: workoutId, date: workoutDate, workout: updatedWorkout })
+                });
+                const result = await response.json();
+                if (result.success) {
+                    alert('일정이 성공적으로 수정되었습니다.');
+                    window.location.href = 'calender.html';
+            } else {
+                    throw new Error(result.message);
+                }
+            } catch (error) {
+                alert('일정 수정 중 오류 발생: ' + error.message);
+            }
+        });
+
+        // --- 삭제 버튼 이벤트 리스너 ---
+        document.getElementById('delete-btn').addEventListener('click', async () => {
+            if (!confirm('정말로 이 일정을 삭제하시겠습니까?')) return;
+
+            try {
+                const response = await fetch('/api/workout', {
+                    method: 'DELETE',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id: workoutId, date: workoutDate })
+                });
+                const result = await response.json();
+                if (result.success) {
+                    alert('일정이 삭제되었습니다.');
+                    window.location.href = 'calender.html';
+                } else {
+                    throw new Error(result.message);
+                }
+            } catch (error) {
+                alert('일정 삭제 중 오류 발생: ' + error.message);
+            }
+        });
+        
+        // --- 불필요한 기능 비활성화 및 정리 ---
+        document.getElementById('calendar-section').style.display = 'none'; // 달력 숨기기
+        const endTimeInput = document.getElementById('end-time');
+        if (originalWorkoutData) {
+            endTimeInput.disabled = (originalWorkoutData.startDate === originalWorkoutData.endDate); // 날짜 같으면 비활성화
+        }
+    });
+  </script>
+  <script src="js/notifications.js"></script>
+</body>
+</html>

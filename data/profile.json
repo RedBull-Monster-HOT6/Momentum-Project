@@ -1,0 +1,15 @@
+{
+  "name": "RedBull-Monster-HOT6",
+  "email": "pjjpjj111@naver.com",
+  "joinDate": "2025-03-01",
+  "profileImageUrl": "assets/pratik-bisht-qyD8J8uwtEs-unsplash.jpg",
+  "goals": {
+    "weeklyWorkouts": 10
+  },
+  "personalInfo": {
+    "gender": "남성",
+    "age": 24,
+    "height": 172,
+    "weight": 60
+  }
+}

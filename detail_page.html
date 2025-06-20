@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="" />
+    <link
+      rel="stylesheet"
+      as="style"
+      onload="this.rel='stylesheet'"
+      href="https://fonts.googleapis.com/css2?display=swap&amp;family=Manrope%3Awght%40400%3B500%3B700%3B800&amp;family=Noto+Sans%3Awght%40400%3B500%3B700%3B900"
+    />
+
+    <title>Momentum Detail</title>
+    <link rel="icon" type="image/x-icon" href="data:image/x-icon;base64," />
+
+    <style>
+        html, body {
+            margin: 0; padding: 0; width: 100%; height: 100%;
+            font-family: 'Manrope', 'Noto Sans', sans-serif;
+            background-color: #121217;
+            color: white;
+        }
+        .design-root { display: flex; flex-direction: column; min-height: 100vh; width: 100%; }
+        .layout-container { display: flex; flex-direction: column; flex-grow: 1; height: 100%; }
+        .main-content {
+            display: flex;
+            gap: 2rem;
+            padding: 2.5rem;
+            max-width: 1440px;
+            margin: 0 auto;
+        }
+        .content-container {
+            display: flex;
+            flex-direction: column;
+            width: 400px;
+            flex-shrink: 0;
+        }
+
+        /* --- 헤더 --- */
+        .main-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.75rem 2.5rem;
+            border-bottom: 1px solid #2a2c37;
+            white-space: nowrap;
+        }
+        .logo-container { display: flex; align-items: center; gap: 1rem; }
+        .logo-container .logo-icon { width: 1rem; height: 1rem; }
+        .logo-container .logo-title { font-size: 1.125rem; font-weight: 700; letter-spacing: -0.015em; }
+        .header-nav {
+            display: flex;
+            flex: 1;
+            justify-content: flex-end;
+            gap: 2rem;
+            align-items: center;
+            position: relative;
+        }
+        .nav-links { display: flex; align-items: center; gap: 2.25rem; }
+        .nav-links a { font-size: 0.875rem; font-weight: 500; text-decoration: none; color: white; cursor: pointer; }
+        .header-button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 2.5rem;
+            background-color: #2a2c37;
+            border-radius: 9999px;
+            padding: 0 0.625rem;
+            border: none;
+            cursor: pointer;
+            color: white;
+        }
+        .profile-image {
+            width: 2.5rem;
+            height: 2.5rem;
+            border-radius: 50%;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            cursor: pointer;
+        }
+        
+        .workout-main-info { display: flex; align-items: center; gap: 1.25rem; padding-bottom: 1.5rem; }
+        .workout-icon {
+            width: 3.5rem; height: 3.5rem;
+            border-radius: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #3b82f6; 
+            color: white; 
+        }
+        .workout-icon svg {
+            width: 2rem;
+            height: 2rem;
+        }
+        .workout-title-group { display: flex; flex-direction: column; justify-content: center; }
+        .workout-name {
+            font-size: 2.25rem;
+            font-weight: 800;
+            line-height: 1.2;
+            background: linear-gradient(90deg, #e2e2e2, #ffffff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            -webkit-text-fill-color: transparent;
+            padding-bottom: 0.25rem;
+            text-shadow: 0 2px 15px rgba(0, 0, 0, 0.2);
+        }
+        .workout-purpose { display: none; }
+
+        .detail-card {
+            background-color: #1a1b23;
+            border-radius: 0.75rem;
+            padding: 1rem 1.25rem;
+            margin-bottom: 1rem;
+        }
+
+        .detail-section-title {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #a2a5b4;
+            padding: 0;
+            margin: 0 0 0.5rem 0;
+        }
+        .detail-item {
+            display: flex;
+            align-items: center;
+            min-height: auto;
+            padding: 0;
+        }
+        .detail-text { font-size: 1rem; }
+        .notes-text {
+            font-size: 1rem;
+            line-height: 1.5;
+            padding: 0;
+            margin: 0;
+            white-space: pre-wrap;
+        }
+        
+        .button-group { display: flex; justify-content: flex-start; gap: 0.75rem; padding: 0.75rem 0; }
+        .action-button { min-width: 84px; height: 2.5rem; padding: 0 1rem; background-color: #2b2d36; color: white; border: none; border-radius: 9999px; font-size: 0.875rem; font-weight: 700; cursor: pointer; }
+        .action-button:hover { background-color: #3a3d4a; }
+
+        .image-container {
+            flex-grow: 1;
+            min-width: 0;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .main-image {
+            width: 100%;
+            height: auto;
+            max-height: calc(100vh - 10rem);
+            border-radius: 1.5rem;
+            object-fit: cover;
+        }
+
+        .image-tooltip {
+            position: absolute;
+            bottom: 1.5rem;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: rgba(0, 0, 0, 0.6);
+            color: white;
+            padding: 0.75rem 1.25rem;
+            border-radius: 0.75rem;
+            font-size: 1rem;
+            font-weight: 500;
+            white-space: nowrap;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .image-container:hover .image-tooltip {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        #loading, #not-found { text-align: center; padding: 4rem; font-size: 1.25rem; color: #a2a5b4; }
+
+        .notification-popup {
+            position: absolute;
+            top: calc(100% + 10px);
+            right: 0;
+            width: 320px;
+            background-color: #1f2028;
+            border-radius: 0.75rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+            border: 1px solid #3a3c47;
+            z-index: 2000;
+            padding: 0.5rem;
+            display: none;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+        .notification-popup.visible {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .notification-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 1rem;
+            font-weight: 600;
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid #3a3c47;
+            color: #e2e2e2;
+        }
+        .notification-list { max-height: 300px; overflow-y: auto; }
+        .notification-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            border-bottom: 1px solid #2a2c37;
+            text-decoration: none;
+            color: #d1d5db;
+            transition: background-color 0.2s ease;
+        }
+        .notification-item:last-child { border-bottom: none; }
+        .notification-item:hover { background-color: #2a2c37; }
+        .notification-item-name {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: #f0f0f0;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 160px;
+        }
+        .notification-item-status {
+            font-size: 0.875rem;
+            padding: 0.25rem 0.6rem;
+            border-radius: 9999px;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+        .notification-item-status.before { background-color: rgba(59, 130, 246, 0.2); color: #60a5fa; }
+        .notification-item-status.in-progress { background-color: rgba(16, 185, 129, 0.2); color: #34d399; }
+        .notification-item-status.after { background-color: rgba(74, 74, 82, 0.5); color: #a2a5b4; }
+    </style>
+  </head>
+  <body>
+    <div id="app-root" class="design-root" style="display: none;">
+        <header class="main-header">
+            <div class="logo-container">
+                <div class="logo-icon">
+                    <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect width="48" height="48" rx="12" fill="#4F46E5"/>
+                        <path d="M14 24L22 32L34 16" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M14 24L22 32L34 16" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" opacity="0.3"/>
+                    </svg>
+                </div>
+                <h2 class="logo-title">Momentum</h2>
+            </div>
+            <button class="header-button close-button">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20px" height="20px" fill="currentColor" viewBox="0 0 256 256">
+                    <path
+                        d="M205.66,194.34a8,8,0,0,1-11.32,11.32L128,139.31,61.66,205.66a8,8,0,0,1-11.32-11.32L116.69,128,50.34,61.66A8,8,0,0,1,61.66,50.34L128,116.69l66.34-66.35a8,8,0,0,1,11.32,11.32L139.31,128Z"
+                    ></path>
+                </svg>
+            </button>
+        </header>
+        <div class="main-content">
+            <main class="content-container">
+                <div class="workout-main-info">
+                    <div id="workout-icon" class="workout-icon"></div>
+                    <div class="workout-title-group">
+                        <p id="workout-name" class="workout-name"></p>
+                        <p id="workout-purpose" class="workout-purpose"></p>
+                    </div>
+                </div>
+                
+                <div class="detail-card">
+                    <h3 class="detail-section-title">시간</h3>
+                    <div class="detail-item"><p id="workout-time" class="detail-text"></p></div>
+                </div>
+                
+                <div class="detail-card">
+                    <h3 class="detail-section-title">장소</h3>
+                    <div class="detail-item"><p id="workout-location" class="detail-text"></p></div>
+                </div>
+
+                <div class="detail-card">
+                    <h3 class="detail-section-title">알람</h3>
+                    <div class="detail-item"><p id="workout-reminder" class="detail-text"></p></div>
+                </div>
+
+                <div class="detail-card">
+                    <h3 class="detail-section-title">노트</h3>
+                    <p id="workout-notes" class="notes-text"></p>
+                </div>
+
+                <div class="button-group">
+                    <button id="back-btn" class="action-button">돌아가기</button>
+                    <button id="edit-btn" class="action-button" data-id="${workout.id}" data-date="${date}">수정</button>
+                </div>
+            </main>
+            <aside class="image-container">
+                <img id="main-image" class="main-image" src="" alt="Workout illustration" />
+                <div id="image-tooltip" class="image-tooltip"></div>
+            </aside>
+        </div>
+    </div>
+    <div id="loading"><p>Loading workout details...</p></div>
+    <div id="not-found" style="display: none;"><p>Workout not found.</p></div>
+
+    <script>
+    const assetImages = [
+        { src: "assets/pexels-saturnus99-11174760.jpg", location: "구시로 습원 두루미(단정학) 釧路湿原 タンチョウ" },
+        { src: "assets/pexels-saturnus99-29521083.jpg", location: "제주도 성산일출봉" },
+        { src: "assets/pexels-sumitomo-tan-1264540-9560372.jpg", location: "한국의 겨울산" },
+        { src: "assets/pexels-carlo-obrien-402486657-15253376.jpg", location: "겨울 평야" },
+        { src: "assets/volcano-3779159.jpg", location: "홋카이도 요테이산 羊蹄山 (蝦夷 富士)" },
+        { src: "assets/pratik-bisht-qyD8J8uwtEs-unsplash.jpg", location: "하늘로 이어지는 길 天まで続く道" },
+        { src: "assets/delvin-abdiel-rwajwflPZdQ-unsplash.jpg", location: "시레토코 知床" },
+        { src: "assets/10400_5_l.jpg", location: "시레토코 유빙 知床 流氷" }
+    ];
+
+    async function fetchWorkoutDetails() {
+        const params = new URLSearchParams(window.location.search);
+        const workoutId = params.get('id');
+
+        const loadingEl = document.getElementById('loading');
+        const notFoundEl = document.getElementById('not-found');
+        const appRootEl = document.getElementById('app-root');
+
+        if (!workoutId) {
+            loadingEl.style.display = 'none';
+            notFoundEl.style.display = 'block';
+            return;
+        }
+
+        try {
+            const [workoutResponse, iconsResponse] = await Promise.all([
+                fetch('./data/workouts.json'),
+                fetch('./data/icons.json')
+            ]);
+
+            if (!workoutResponse.ok) throw new Error('Failed to load workout data.');
+            if (!iconsResponse.ok) throw new Error('Failed to load icon data.');
+            
+            const workoutData = await workoutResponse.json();
+            const iconsData = await iconsResponse.json();
+            
+            const allWorkouts = Object.values(workoutData.workouts).flat();
+            const workout = allWorkouts.find(w => w.id == workoutId);
+            
+            const workoutDateKey = workout ? workout.startDate : null;
+            
+            const icon = iconsData.icons.find(i => i.name === workout.icon);
+
+            if (!workout) {
+                loadingEl.style.display = 'none';
+                notFoundEl.style.display = 'block';
+                return;
+            }
+
+            document.title = `${workout.name} | Momentum`;
+            document.getElementById('workout-name').textContent = workout.name;
+            document.getElementById('workout-purpose').textContent = workout.purpose || 'N/A';
+            
+            const workoutIconEl = document.getElementById('workout-icon');
+            if (icon) {
+                const iconSVG = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+                iconSVG.setAttribute('viewBox', '0 0 256 256');
+                iconSVG.setAttribute('fill', 'currentColor');
+                const iconPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                iconPath.setAttribute('d', icon.svgPath);
+                iconSVG.appendChild(iconPath);
+                workoutIconEl.appendChild(iconSVG);
+            }
+            
+            const randomImage = assetImages[Math.floor(Math.random() * assetImages.length)];
+            document.getElementById('main-image').src = randomImage.src;
+            document.getElementById('image-tooltip').textContent = randomImage.location;
+
+            document.getElementById('workout-time').textContent = `${workout.startTime} - ${workout.endTime}`;
+            document.getElementById('workout-location').textContent = workout.location || 'Not specified';
+            
+            const reminderEl = document.getElementById('workout-reminder');
+            const notification = workout.notification;
+            if (!notification || notification.toLowerCase() === 'none') {
+                reminderEl.textContent = '없음';
+            } else if (notification.endsWith('m')) {
+                reminderEl.textContent = `${notification.slice(0, -1)}분 전`;
+            } else if (notification.endsWith('h')) {
+                reminderEl.textContent = `${notification.slice(0, -1)}시간 전`;
+            } else {
+                reminderEl.textContent = notification; // 예상치 못한 형식일 경우 그대로 표시
+            }
+
+            document.getElementById('workout-notes').textContent = workout.notes || 'No notes.';
+
+            // 버튼 이벤트 리스너
+            const editBtn = document.getElementById('edit-btn');
+            editBtn.dataset.id = workout.id;
+            editBtn.dataset.date = workoutDateKey;
+            editBtn.addEventListener('click', () => {
+                window.location.href = `edit_fix_contents.html?id=${workout.id}&date=${workoutDateKey}`;
+            });
+            document.getElementById('back-btn').addEventListener('click', () => window.history.back());
+            document.querySelector('.close-button').addEventListener('click', () => {
+                history.back();
+            });
+            
+            // 로딩 숨기고 앱 보여주기
+            loadingEl.style.display = 'none';
+            appRootEl.style.display = 'flex';
+
+        } catch (error) {
+            console.error('세부 정보 가져오기 오류:', error);
+            loadingEl.style.display = 'none';
+            notFoundEl.innerHTML = '<p>세부 정보 가져오기 오류.</p>';
+            notFoundEl.style.display = 'block';
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', fetchWorkoutDetails);
+    </script>
+  </body>
+</html>

@@ -1,0 +1,1178 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="" />
+  <link
+    rel="stylesheet"
+    as="style"
+    onload="this.rel='stylesheet'"
+    href="https://fonts.googleapis.com/css2?display=swap&amp;family=Manrope%3Awght%40400%3B500%3B700%3B800&amp;family=Noto+Sans%3Awght%40400%3B500%3B700%3B900"
+  />
+  <title>Momentum Calendar</title>
+  <link rel="icon" type="image/x-icon" href="data:image/x-icon;base64," />
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      font-family: 'Manrope', 'Noto Sans', sans-serif;
+      background-color: #121217; 
+      color: white;
+    }
+
+    .design-root {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      width: 100%;
+    }
+
+    .layout-container {
+      display: flex;
+      flex-direction: column;
+      flex-grow: 1;
+      height: 100%;
+    }
+
+    /* --- 헤더 --- */
+    .main-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.75rem 2.5rem;
+      border-bottom: 1px solid #2a2c37;
+      white-space: nowrap;
+    }
+
+    .logo-container {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .logo-container .logo-icon {
+      width: 1rem;
+      height: 1rem;
+    }
+
+    .logo-container .logo-title {
+      font-size: 1.125rem;
+      font-weight: 700;
+      letter-spacing: -0.015em;
+    }
+
+    .header-nav {
+      display: flex;
+      flex: 1;
+      justify-content: flex-end;
+      gap: 2rem;
+      align-items: center;
+      position: relative; /* 팝업 위치의 기준점 */
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 2.25rem;
+    }
+
+    .nav-links a {
+      font-size: 0.875rem;
+      font-weight: 500;
+      text-decoration: none;
+      color: white;
+      cursor: pointer;
+      transition: color 0.2s ease-in-out;
+    }
+
+    .nav-links a:hover {
+      color: #9fa3b7;
+    }
+
+    .header-button {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 2.5rem;
+      background-color: #2a2c37;
+      border-radius: 9999px;
+      padding: 0 0.625rem;
+      border: none;
+      cursor: pointer;
+      color: white;
+    }
+
+    .header-button svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    .profile-image {
+      width: 2.5rem;
+      height: 2.5rem;
+      border-radius: 50%;
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      cursor: pointer;
+      transition: transform 0.2s ease-in-out;
+    }
+
+    .profile-image:hover {
+      transform: scale(1.05);
+    }
+
+    /* --- 메인 콘텐츠 --- */
+    .main-content {
+      display: flex;
+      flex: 1;
+      justify-content: center;
+      padding: 1.25rem 0;
+      padding-left: 10rem;
+      padding-right: 10rem;
+    }
+
+    .content-container {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      max-width: 960px;
+    }
+
+    .page-header {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 0.75rem;
+      padding: 1rem;
+    }
+
+    .page-title {
+      font-size: 2rem;
+      font-weight: 700;
+      letter-spacing: 0.025em; /* tracking-light */
+    }
+
+    .page-description {
+      font-size: 0.875rem;
+      color: #9fa3b7;
+    }
+
+    /* --- 뷰 전환 탭 --- */
+    .view-switcher {
+      padding: 0.75rem 1rem;
+    }
+
+    .view-switcher-inner {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 2.5rem;
+      background-color: #2a2c37;
+      border-radius: 9999px;
+      padding: 0.25rem;
+    }
+
+    .view-switcher-label {
+      display: flex;
+      flex-grow: 1;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      padding: 0 0.5rem;
+      border-radius: 9999px;
+      color: #9fa3b7;
+      font-size: 0.875rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease-in-out;
+    }
+
+    .view-switcher-label input {
+      display: none; /* 라디오 버튼 숨기기 */
+    }
+
+    /* 선택된 탭 스타일 */
+    .view-switcher-label input:checked + span {
+      background-color: #121217;
+      color: white;
+      box-shadow: 0 0 4px rgba(0,0,0,0.1);
+      display: block;
+      width: 100%;
+      height: 100%;
+      border-radius: 9999px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .view-switcher-label span {
+      padding: 0 0.5rem;
+    }
+
+    /* --- 캘린더 --- */
+    #calendar-container {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-start;
+      justify-content: center;
+      gap: 2rem;
+      padding: 1rem;
+    }
+
+    .calendar {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+      padding: 1.5rem;
+      background-color: #1a1b23;
+      border-radius: 1rem;
+      width: 320px;
+      min-height: 380px;
+      flex-shrink: 0;
+    }
+
+    .calendar-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      gap: 0.5rem;
+    }
+
+    .calendar-header .month-year {
+      font-size: 1.125rem;
+      font-weight: 600;
+      color: white;
+      flex: 1;
+      text-align: center;
+      margin: 0;
+    }
+
+    .calendar-header button {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 2rem;
+      height: 2rem;
+      background-color: #2a2c37;
+      border-radius: 50%;
+      border: none;
+      cursor: pointer;
+      color: white;
+      transition: background-color 0.2s ease-in-out;
+      flex-shrink: 0;
+    }
+
+    .calendar-header button:hover {
+      background-color: #3a3c47;
+    }
+
+    .calendar-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 0.25rem;
+      width: 100%;
+      height: 280px;
+    }
+
+    .day-header, .calendar-day {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 2.5rem;
+      border-radius: 0.5rem;
+      font-size: 0.875rem;
+      font-weight: 500;
+    }
+
+    .day-header {
+      color: #9fa3b7;
+      font-weight: 600;
+    }
+
+    .calendar-day {
+      background-color: transparent;
+      border: none;
+      cursor: pointer;
+      color: white;
+      transition: all 0.2s ease-in-out;
+      position: relative;
+    }
+
+    .calendar-day:hover {
+      background-color: #2a2c37;
+    }
+
+    .calendar-day .day-number {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      height: 100%;
+      border-radius: 0.5rem;
+      transition: all 0.2s ease-in-out;
+    }
+
+    /* 동적 col-start 클래스 생성 */
+    .calendar-day.col-start-1 { grid-column-start: 1; }
+    .calendar-day.col-start-2 { grid-column-start: 2; }
+    .calendar-day.col-start-3 { grid-column-start: 3; }
+    .calendar-day.col-start-4 { grid-column-start: 4; }
+    .calendar-day.col-start-5 { grid-column-start: 5; }
+    .calendar-day.col-start-6 { grid-column-start: 6; }
+    .calendar-day.col-start-7 { grid-column-start: 7; }
+
+    .calendar-day.range-start {
+      background-color: #3b82f6;
+      border-radius: 0.5rem 0 0 0.5rem;
+    }
+
+    .calendar-day.range-end {
+      background-color: #3b82f6;
+      border-radius: 0 0.5rem 0.5rem 0;
+    }
+
+    .calendar-day.in-range {
+      background-color: #1d4ed8;
+    }
+
+    .calendar-day .day-number.selected {
+      background-color: #3b82f6;
+      color: white;
+      border-radius: 0.5rem;
+    }
+
+    /* --- 운동 목록 --- */
+    #workout-list {
+      padding: 1rem;
+    }
+
+    .workout-list-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin: 1.5rem 0 1rem 0;
+      color: white;
+    }
+
+    .workout-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1rem;
+      background-color: #1a1b23;
+      border-radius: 0.75rem;
+      margin-bottom: 0.75rem;
+      cursor: pointer;
+      transition: all 0.2s ease-in-out;
+    }
+
+    .workout-item:hover {
+      background-color: #2a2c37;
+      transform: translateY(-2px);
+    }
+
+    .workout-item-info {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .workout-icon-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 3rem;
+      height: 3rem;
+      background-color: #3b82f6;
+      border-radius: 0.75rem;
+      color: white;
+    }
+
+    .workout-icon-container svg {
+      width: 1.5rem;
+      height: 1.5rem;
+    }
+
+    .workout-text .name {
+      font-size: 1rem;
+      font-weight: 600;
+      color: white;
+      margin: 0;
+    }
+
+    .workout-text .time {
+      font-size: 0.875rem;
+      color: #9fa3b7;
+      margin: 0.25rem 0 0 0;
+    }
+
+    .workout-item .arrow-icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #9fa3b7;
+      transition: color 0.2s ease-in-out;
+    }
+
+    .workout-item:hover .arrow-icon {
+      color: white;
+    }
+
+    /* --- 일정이 없을 때 메시지 --- */
+    .no-workout-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 3rem 1rem;
+      text-align: center;
+      animation: fadeIn 0.5s ease-in-out; /* 애니메이션 추가 */
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .no-workout-message {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: #9fa3b7;
+      margin: 0 0 1.5rem 0; /* 여백 조정 */
+    }
+    
+    .quote-container {
+        margin: 0;
+        padding: 1.5rem;
+        border-left: 3px solid #3b82f6;
+        background-color: #1a1b23;
+        border-radius: 0 0.5rem 0.5rem 0;
+        max-width: 90%;
+        text-align: left;
+    }
+
+    .time-quote {
+      font-size: 1rem;
+      color: #d1d5db;
+      font-style: italic;
+      margin: 0 0 1rem 0;
+      line-height: 1.6;
+      white-space: pre-line; /* 줄바꿈 인식 */
+    }
+
+    .quote-author {
+        font-size: 0.875rem;
+        font-weight: 500;
+        color: #9fa3b7;
+        text-align: right;
+    }
+
+    /* --- 알림 팝업 --- */
+    .notification-popup {
+        position: absolute;
+        top: calc(100% + 10px);
+        right: 0;
+        width: 320px;
+        background-color: #1f2028;
+        border-radius: 0.75rem;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+        border: 1px solid #3a3c47;
+        z-index: 2000;
+        padding: 0.5rem;
+        display: none; /* 기본 숨김 처리 */
+        opacity: 0;
+        transform: translateY(10px);
+        transition: opacity 0.3s ease, transform 0.3s ease;
+    }
+
+    .notification-popup.visible {
+        display: block; /* JS로 컨트롤 */
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    .notification-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 1rem;
+        font-weight: 600;
+        padding: 0.75rem 1rem;
+        border-bottom: 1px solid #3a3c47;
+        color: #e2e2e2;
+    }
+    
+    .notification-list {
+        max-height: 300px;
+        overflow-y: auto;
+    }
+
+    .notification-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem;
+        border-bottom: 1px solid #2a2c37;
+        text-decoration: none;
+        color: #d1d5db;
+        transition: background-color 0.2s ease;
+    }
+
+    .notification-item:last-child {
+        border-bottom: none;
+    }
+
+    .notification-item:hover {
+        background-color: #2a2c37;
+    }
+
+    .notification-item-name {
+        font-size: 0.875rem;
+        font-weight: 500;
+        color: #f0f0f0;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 160px;
+    }
+
+    .notification-item-status {
+        font-size: 0.875rem;
+        padding: 0.25rem 0.6rem;
+        border-radius: 9999px;
+        font-weight: 600;
+        flex-shrink: 0;
+    }
+
+    .notification-item-status.before {
+        background-color: rgba(59, 130, 246, 0.2);
+        color: #60a5fa;
+    }
+
+    .notification-item-status.in-progress {
+        background-color: rgba(16, 185, 129, 0.2);
+        color: #34d399;
+    }
+
+    .notification-item-status.after {
+        background-color: rgba(74, 74, 82, 0.5);
+        color: #a2a5b4;
+    }
+    
+    .no-notification-item {
+        padding: 2rem 1rem;
+        text-align: center;
+        font-size: 0.875rem;
+        color: #9fa3b7;
+    }
+
+    .notification-footer {
+        padding-top: 0.75rem;
+        margin: 0 0.5rem;
+        border-top: 1px solid #3a3c47;
+        text-align: right;
+    }
+
+    .notification-close-button {
+        background-color: #3b82f6;
+        color: white;
+        border: none;
+        padding: 0.5rem 1rem;
+        font-size: 0.875rem;
+        font-weight: 500;
+        border-radius: 0.5rem;
+        cursor: pointer;
+        transition: background-color 0.2s ease;
+    }
+
+    .notification-close-button:hover {
+        background-color: #2563eb;
+    }
+
+    /* --- 플로팅 추가 버튼 --- */
+    .add-button-container {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      z-index: 1000;
+    }
+
+    .add-button {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 4rem;
+      height: 4rem;
+      background-color: #3b82f6;
+      border: none;
+      border-radius: 50%;
+      cursor: pointer;
+      color: white;
+      transition: all 0.3s ease-in-out;
+      box-shadow: 0 8px 24px rgba(59, 130, 246, 0.4);
+      position: relative;
+      overflow: visible;
+    }
+
+    .add-button::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, transparent 70%);
+      border-radius: 50%;
+      opacity: 0;
+      transition: opacity 0.3s ease-in-out;
+    }
+
+    .add-button::after {
+      content: '새 일정 만들기';
+      position: absolute;
+      right: calc(100% + 12px);
+      top: 50%;
+      transform: translateY(-50%);
+      background-color: #1a1b23;
+      color: white;
+      padding: 0.75rem 1rem;
+      border-radius: 0.5rem;
+      font-size: 0.875rem;
+      font-weight: 500;
+      white-space: nowrap;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease-in-out;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+      border: 1px solid #2a2c37;
+    }
+
+    .add-button:hover::after {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(-50%) translateX(-4px);
+    }
+
+    .add-button:hover {
+      background-color: #2563eb;
+      transform: translateY(-4px) scale(1.05);
+      box-shadow: 0 12px 32px rgba(59, 130, 246, 0.6);
+    }
+
+    .add-button:hover::before {
+      opacity: 1;
+    }
+
+    .add-button:active {
+      transform: translateY(-2px) scale(1.02);
+      box-shadow: 0 6px 20px rgba(59, 130, 246, 0.5);
+    }
+
+    .add-button svg {
+      width: 1.5rem;
+      height: 1.5rem;
+      transition: transform 0.3s ease-in-out;
+    }
+
+    .add-button:hover svg {
+      transform: rotate(90deg);
+    }
+  </style>
+</head>
+<body>
+  <div class="design-root">
+    <div class="layout-container">
+      <header class="main-header">
+        <div class="logo-container">
+          <div class="logo-icon">
+            <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect width="48" height="48" rx="12" fill="#4F46E5"/>
+              <path d="M14 24L22 32L34 16" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M14 24L22 32L34 16" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" opacity="0.3"/>
+            </svg>
+          </div>
+          <h2 class="logo-title">Momentum</h2>
+        </div>
+        <nav class="header-nav">
+          <div class="nav-links">
+            <a href="./home.html">홈</a>
+            <a href="./calender.html">캘린더</a>
+            <a href="./todo-list.html">오늘 할 일</a>
+          </div>
+          <button class="header-button" id="notification-bell-button">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20px" height="20px" fill="currentColor" viewBox="0 0 256 256">
+              <path d="M221.8,175.94C216.25,166.38,208,139.33,208,104a80,80,0,1,0-160,0c0,35.34-8.26,62.38-13.81,71.94A16,16,0,0,0,48,200H88.81a40,40,0,0,0,78.38,0H208a16,16,0,0,0,13.8-24.06ZM128,216a24,24,0,0,1-22.62-16h45.24A24,24,0,0,1,128,216ZM48,184c7.7-13.24,16-43.92,16-80a64,64,0,1,1,128,0c0,36.05,8.28,66.73,16,80Z"></path>
+            </svg>
+          </button>
+          <div id="profile-image-container" class="profile-image"></div>
+        </nav>
+      </header>
+      <div class="main-content">
+        <div class="content-container">
+          <div class="page-header">
+            <div>
+              <p class="page-title">일정 계획</p>
+              <p class="page-description">계획 확인 및 향후 계획 수립</p>
+            </div>
+          </div>
+          <div class="view-switcher">
+            <div class="view-switcher-inner">
+              <label class="view-switcher-label">
+                <input type="radio" name="view-switch" value="plan" />
+                <span>일정 계획</span>
+              </label>
+              <label class="view-switcher-label">
+                <input type="radio" name="view-switch" value="calendar" checked/>
+                <span>캘린더</span>
+              </label>
+            </div>
+          </div>
+          <div id="calendar-container">
+          </div>
+          <div id="workout-list">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="add-button-container">
+    <button class="add-button" onclick="window.location.href='./edit.html'">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" fill="currentColor" viewBox="0 0 256 256">
+          <path d="M224,128a8,8,0,0,1-8,8H136v80a8,8,0,0,1-16,0V136H40a8,8,0,0,1,0-16h80V40a8,8,0,0,1,16,0v80h80A8,8,0,0,1,224,128Z"></path>
+        </svg>
+    </button>
+  </div>
+
+  <script src="js/notifications.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      
+      const workoutListContainer = document.getElementById('workout-list');
+      const calendarContainer = document.getElementById('calendar-container');
+      const viewSwitches = document.querySelectorAll('input[name="view-switch"]');
+
+      let startDate = null;
+      let endDate = null;
+      let workouts = {};
+      let currentView = 'calendar';
+      let currentMonth = new Date();
+      let calendars = [];
+
+      const MIN_DATE = new Date(0, 0, 1);
+      const MAX_DATE = new Date(3000, 11, 31);
+
+      // 시간대에 영향을 받지 않고 'YYYY-MM-DD' 형식의 문자열을 반환하는 헬퍼 함수
+      function toYYYYMMDD(date) {
+        const year = date.getFullYear();
+        const month = (date.getMonth() + 1).toString().padStart(2, '0');
+        const day = date.getDate().toString().padStart(2, '0');
+        return `${year}-${month}-${day}`;
+      }
+
+      const iconPaths = {
+        Barbell: "M248,120h-8V88a16,16,0,0,0-16-16H208V64a16,16,0,0,0-16-16H168a16,16,0,0,0-16,16v56H104V64A16,16,0,0,0,88,48H64A16,16,0,0,0,48,64v8H32A16,16,0,0,0,16,88v32H8a8,8,0,0,0,0,16h8v32a16,16,0,0,0,16,16H48v8a16,16,0,0,0,16,16H88a16,16,0,0,0,16-16V136h48v56a16,16,0,0,0,16,16h24a16,16,0,0,0,16-16v-8h16a16,16,0,0,0,16-16V136h8a8,8,0,0,0,0-16ZM32,168V88H48v80Zm56,24H64V64H88V192Zm104,0H168V64h24V175.82c0,.06,0,.12,0,.18s0,.12,0,.18V192Zm32-24H208V88h16Z",
+        FlowerLotus: "M245.83,121.63a15.53,15.53,0,0,0-9.52-7.33,73.51,73.51,0,0,0-22.17-2.22c4-19.85,1-35.55-2.06-44.86a16.15,16.15,0,0,0-18.79-10.88,85.53,85.53,0,0,0-28.55,12.12,94.58,94.58,0,0,0-27.11-33.25,16.05,16.05,0,0,0-19.26,0A94.48,94.48,0,0,0,91.26,68.46,85.53,85.53,0,0,0,62.71,56.34,16.15,16.15,0,0,0,43.92,67.22c-3,9.31-6,25-2.06,44.86a73.51,73.51,0,0,0-22.17,2.22,15.53,15.53,0,0,0-9.52,7.33,16,16,0,0,0-1.6,12.27c3.39,12.57,13.8,36.48,45.33,55.32S113.13,208,128.05,208s42.67,0,74-18.78c31.53-18.84,41.94-42.75,45.33-55.32A16,16,0,0,0,245.83,121.63ZM59.14,72.14a.2.2,0,0,1,.23-.15A70.43,70.43,0,0,1,85.18,83.66,118.65,118.65,0,0,0,80,119.17c0,18.74,3.77,34,9.11,46.28A123.59,123.59,0,0,1,69.57,140C51.55,108.62,55.3,84,59.14,72.14Zm3,103.35C35.47,159.57,26.82,140.05,24,129.7a59.82,59.82,0,0,1,22.5-1.17,129.08,129.08,0,0,0,9.15,19.41,142.28,142.28,0,0,0,34,39.56A114.92,114.92,0,0,1,62.1,175.49ZM128,190.4c-9.33-6.94-32-28.23-32-71.23C96,76.7,118.38,55.24,128,48c9.62,7.26,32,28.72,32,71.19C160,162.17,137.33,183.46,128,190.4ZM170.82,83.66A70.43,70.43,0,0,1,196.63,72a.2.2,0,0,1,.23.15C200.7,84,204.45,108.62,186.43,140a123.32,123.32,0,0,1-19.54,25.48c5.34-12.26,9.11-27.54,9.11-46.28A118.65,118.65,0,0,0,170.82,83.66ZM232,129.72c-2.77,10.25-11.4,29.81-38.09,45.77a114.92,114.92,0,0,1-27.55,12,142.28,142.28,0,0,0,34-39.56,129.08,129.08,0,0,0,9.15-19.41A59.69,59.69,0,0,1,232,129.71Z",
+        Heart: "M178,32c-20.65,0-38.73,8.88-50,23.89C116.73,40.88,98.65,32,78,32A62.07,62.07,0,0,0,16,94c0,70,103.79,126.66,108.21,129a8,8,0,0,0,7.58,0C136.21,220.66,240,164,240,94A62.07,62.07,0,0,0,178,32ZM128,206.8C109.74,196.16,32,147.69,32,94A46.06,46.06,0,0,1,78,48c19.45,0,35.78,10.36,42.6,27a8,8,0,0,0,14.8,0c6.82-16.67,23.15-27,42.6-27a46.06,46.06,0,0,1,46,46C224,147.61,146.24,196.15,128,206.8Z"
+      };
+
+      const timeQuotes = [
+        { quote: "내가 헛되이 보낸 오늘 하루는\n어제 죽어간 이들이 그토록 바라던 하루이다.\n단 하루면 인간적인 모든 것을 멸망시킬 수 있고\n다시 소생시킬 수도 있다.", author: "소포클레스" },
+        { quote: "우리는 1년 후면 다 잊어버릴 슬픔을 간직하느라,\n무엇과도 바꿀 수 없는 소중한 시간을 낭비하고 있다\n소심하게 굴기에 인생은 너무나 짧습니다.", author: "카네기" },
+        { quote: "변명 중에서도 가장 어리석고 못난 변명은\n\"시간이 없어서\"라는 변명이다.", author: "에디슨" },
+        { quote: "시간을 지배할 줄 아는 사람은\n인생을 지배할 줄 아는 사람이다.", author: "에센 바흐" },
+        { quote: "시간의 걸음걸이에는 세 가지가 있다.\n미래는 주저하면서 다가오고, 현재는 화살처럼 날아가고,\n과거는 영원히 정지하고 있다.", author: "F. 실러" },
+        { quote: "짧은 인생은 시간 낭비에 의해 더욱 짧아진다.", author: "S. 존슨" },
+        { quote: "시간을 단축시키는 것은 활동이요,\n시간을 견디지 못하게 하는 것은 안일함이다.", author: "괴테" },
+        { quote: "미래를 신뢰하지 마라, 죽은 과거는 묻어버려라,\n그리고 살아있는 현재에 행동하라.", author: "롱펠로" }
+      ];
+
+      async function loadWorkouts() {
+        try {
+          const response = await fetch('./data/workouts.json');
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          const data = await response.json();
+          workouts = data.workouts;
+          initializeApp();
+        } catch (error) {
+          console.error("Could not load workouts:", error);
+          // 데이터 로딩 실패 시 UI에 메시지 표시
+          calendarContainer.innerHTML = '<p style="text-align:center; color: #ff6b6b;">데이터를 불러오는데 실패했습니다.</p>';
+          workoutListContainer.innerHTML = '';
+        }
+      }
+
+      function initializeApp() {
+        viewSwitches.forEach(radio => {
+          radio.addEventListener('change', (e) => handleViewChange(e.target.value));
+        });
+        
+        setInitialMonth();
+        createCalendars();
+        handleViewChange(currentView);
+      }
+
+      function setInitialMonth() {
+        const workoutDates = Object.keys(workouts).sort();
+        if (workoutDates.length > 0) {
+          const firstWorkoutDate = new Date(workoutDates[0] + 'T00:00:00');
+          currentMonth = new Date(firstWorkoutDate.getFullYear(), firstWorkoutDate.getMonth(), 1);
+        }
+      }
+
+      function createCalendars() {
+        calendarContainer.innerHTML = '';
+        calendars = [];
+
+        for (let i = 0; i < 2; i++) {
+          const monthDate = new Date(currentMonth);
+          monthDate.setMonth(currentMonth.getMonth() + i);
+          
+          const calendar = createCalendar(monthDate, i);
+          calendars.push(calendar);
+          calendarContainer.appendChild(calendar);
+        }
+        updateCalendarUI();
+      }
+
+      function createCalendar(monthDate, calendarIndex) {
+        const calendar = document.createElement('div');
+        calendar.className = 'calendar';
+        
+        const year = monthDate.getFullYear();
+        const month = monthDate.getMonth();
+        const monthName = monthDate.toLocaleDateString('ko-KR', { month: 'long' });
+        
+        const header = document.createElement('div');
+        header.className = 'calendar-header';
+        
+        const prevButton = document.createElement('button');
+        prevButton.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="18px" height="18px" fill="currentColor" viewBox="0 0 256 256"><path d="M165.66,202.34a8,8,0,0,1-11.32,11.32l-80-80a8,8,0,0,1,0-11.32l80-80a8,8,0,0,1,11.32,11.32L91.31,128Z"></path></svg>`;
+        prevButton.addEventListener('click', () => navigateMonth(-1));
+        
+        const monthYear = document.createElement('p');
+        monthYear.className = 'month-year';
+        monthYear.textContent = `${year}년 ${monthName}`;
+        
+        const nextButton = document.createElement('button');
+        nextButton.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="18px" height="18px" fill="currentColor" viewBox="0 0 256 256"><path d="M181.66,133.66l-80,80a8,8,0,0,1-11.32-11.32L164.69,128,90.34,53.66a8,8,0,0,1,11.32-11.32l80,80A8,8,0,0,1,181.66,133.66Z"></path></svg>`;
+        nextButton.addEventListener('click', () => navigateMonth(1));
+        
+        header.appendChild(prevButton);
+        header.appendChild(monthYear);
+        header.appendChild(nextButton);
+        
+        const grid = document.createElement('div');
+        grid.className = 'calendar-grid';
+        
+        const daysOfWeek = ['일', '월', '화', '수', '목', '금', '토'];
+        daysOfWeek.forEach(day => {
+          const dayHeader = document.createElement('p');
+          dayHeader.className = 'day-header';
+          dayHeader.textContent = day;
+          grid.appendChild(dayHeader);
+        });
+        
+        const days = generateCalendarDays(year, month);
+        days.forEach(day => {
+            const button = document.createElement('button');
+            button.className = 'calendar-day';
+            
+            const dayNumber = document.createElement('div');
+            dayNumber.className = 'day-number';
+            dayNumber.textContent = day.day;
+            button.appendChild(dayNumber);
+
+            if (day.date) {
+                button.dataset.date = day.date;
+                if (day.colStart) {
+                    button.classList.add(`col-start-${day.colStart}`);
+                }
+                button.addEventListener('click', () => handleDateClick(button));
+            } else {
+                button.disabled = true;
+                dayNumber.style.color = '#4a4a52'; // 이전/다음 달 날짜 색상
+            }
+            grid.appendChild(button);
+        });
+        
+        calendar.appendChild(header);
+        calendar.appendChild(grid);
+        
+        return calendar;
+      }
+
+      function generateCalendarDays(year, month) {
+        const firstDay = new Date(year, month, 1);
+        const lastDay = new Date(year, month + 1, 0);
+        
+        const days = [];
+        // 월의 첫 날짜 이전의 빈 공간 채우기
+        for (let i = 0; i < firstDay.getDay(); i++) {
+            const prevMonthDate = new Date(year, month, 0);
+            days.unshift({ day: prevMonthDate.getDate() - i, date: null });
+        }
+
+        // 현재 월의 날짜들
+        for (let i = 1; i <= lastDay.getDate(); i++) {
+          const date = new Date(year, month, i);
+          days.push({
+            day: i,
+            date: toYYYYMMDD(date),
+            colStart: (i === 1) ? date.getDay() + 1 : null
+          });
+        }
+        
+        // 월의 마지막 날짜 이후의 빈 공간 채우기
+        const remainingDays = 42 - days.length;
+        for (let i = 1; i <= remainingDays; i++) {
+            days.push({ day: i, date: null });
+        }
+
+        return days.slice(0, 42); // 항상 42개 셀 유지
+      }
+
+      function navigateMonth(direction) {
+        currentMonth.setMonth(currentMonth.getMonth() + direction);
+        
+        if (currentMonth < MIN_DATE) currentMonth = new Date(MIN_DATE);
+        if (currentMonth > MAX_DATE) currentMonth = new Date(MAX_DATE);
+        
+        createCalendars();
+      }
+
+      function handleViewChange(view) {
+        currentView = view;
+        if (view === 'calendar') {
+          calendarContainer.style.display = 'flex';
+          workoutListContainer.style.display = 'block';
+          updateWorkoutList();
+        } else {
+          calendarContainer.style.display = 'none';
+          workoutListContainer.style.display = 'block';
+          displayAllWorkouts();
+        }
+      }
+
+      function displayAllWorkouts() {
+        workoutListContainer.innerHTML = '';
+        const allWorkoutDates = Object.keys(workouts).sort((a,b) => new Date(a) - new Date(b));
+
+        if (allWorkoutDates.length === 0) {
+            displayNoWorkoutMessage();
+            return;
+        }
+
+        allWorkoutDates.forEach(date => {
+            const dateWorkouts = workouts[date];
+            if (dateWorkouts.length > 0) {
+                const title = document.createElement('h2');
+                title.className = 'workout-list-title';
+                const d = new Date(date + 'T00:00:00');
+                title.textContent = `${d.getFullYear()}년 ${d.getMonth() + 1}월 ${d.getDate()}일`;
+                workoutListContainer.appendChild(title);
+
+                dateWorkouts.forEach(workout => {
+                    const item = createWorkoutItemElement(workout);
+                    workoutListContainer.appendChild(item);
+                });
+            }
+        });
+      }
+
+      function handleDateClick(clickedButton) {
+        const clickedDate = clickedButton.dataset.date;
+        const clickedDateObj = new Date(clickedDate + 'T00:00:00');
+        
+        if (!startDate || (startDate && endDate)) {
+          startDate = clickedDateObj;
+          endDate = null;
+        } else {
+          if (clickedDateObj < startDate) {
+            endDate = startDate;
+            startDate = clickedDateObj;
+          } else {
+            endDate = clickedDateObj;
+          }
+        }
+        
+        updateCalendarUI();
+        updateWorkoutList();
+      }
+
+      function updateCalendarUI() {
+        calendars.forEach(calendar => {
+          calendar.querySelectorAll('.workout-dot').forEach(dot => dot.remove());
+        });
+
+        calendars.forEach(calendar => {
+          const days = calendar.querySelectorAll('.calendar-day');
+          days.forEach(day => {
+            const dayNumber = day.querySelector('.day-number');
+            day.classList.remove('range-start', 'range-end', 'in-range');
+            dayNumber.classList.remove('selected');
+            
+            const date = day.dataset.date;
+            if (date) {
+                const dateObj = new Date(date + 'T00:00:00');
+                
+                if (workouts[date] && workouts[date].length > 0) {
+                    const dot = document.createElement('div');
+                    dot.className = 'workout-dot';
+                    dot.style.cssText = 'position:absolute; bottom:5px; left:50%; transform:translateX(-50%); width:5px; height:5px; background-color:#3b82f6; border-radius:50%;';
+                    day.appendChild(dot);
+                }
+
+                if (startDate) {
+                    if (endDate) {
+                        if (dateObj.getTime() === startDate.getTime()) {
+                            day.classList.add('range-start');
+                            dayNumber.classList.add('selected');
+                        } else if (dateObj.getTime() === endDate.getTime()) {
+                            day.classList.add('range-end');
+                            dayNumber.classList.add('selected');
+                        } else if (dateObj > startDate && dateObj < endDate) {
+                            day.classList.add('in-range');
+                        }
+                    } else if (dateObj.getTime() === startDate.getTime()) {
+                        dayNumber.classList.add('selected');
+                    }
+                }
+            }
+          });
+        });
+      }
+
+      function updateWorkoutList() {
+        workoutListContainer.innerHTML = '';
+        let titleDisplayed = false;
+
+        if (!startDate) {
+          displayNoWorkoutMessage();
+          return;
+        }
+
+        const datesToDisplay = [];
+        if (endDate) {
+          let currentDate = new Date(startDate);
+          while (currentDate <= endDate) {
+            datesToDisplay.push(toYYYYMMDD(currentDate));
+            currentDate.setDate(currentDate.getDate() + 1);
+          }
+        } else {
+          datesToDisplay.push(toYYYYMMDD(startDate));
+        }
+
+        let workoutsFound = false;
+        datesToDisplay.forEach(date => {
+          if (workouts[date] && workouts[date].length > 0) {
+            if (!titleDisplayed) {
+                const d = new Date(date + 'T00:00:00');
+                const title = document.createElement('h2');
+                title.className = 'workout-list-title';
+                
+                if (endDate && startDate.getTime() !== endDate.getTime()) {
+                    title.textContent = `${startDate.toLocaleDateString('ko-KR')} ~ ${endDate.toLocaleDateString('ko-KR')}`;
+                } else {
+                    title.textContent = `${d.toLocaleDateString('ko-KR')}`;
+                }
+
+                workoutListContainer.appendChild(title);
+                titleDisplayed = true;
+            }
+
+            workoutsFound = true;
+            workouts[date].forEach(workout => {
+              const item = createWorkoutItemElement(workout);
+              workoutListContainer.appendChild(item);
+            });
+          }
+        });
+
+        if (!workoutsFound) {
+          displayNoWorkoutMessage();
+        }
+      }
+
+      function displayNoWorkoutMessage() {
+        const randomQuote = timeQuotes[Math.floor(Math.random() * timeQuotes.length)];
+        workoutListContainer.innerHTML = `
+          <div class="no-workout-container">
+            <p class="no-workout-message">선택한 날짜에 예정된 일정이 없습니다.</p>
+            <figure class="quote-container">
+              <blockquote class="time-quote">${randomQuote.quote}</blockquote>
+              <figcaption class="quote-author">- ${randomQuote.author} -</figcaption>
+            </figure>
+          </div>
+        `;
+      }
+
+      function createWorkoutItemElement(workout) {
+        const item = document.createElement('div');
+        item.className = 'workout-item';
+        item.onclick = () => { window.location.href = `./detail_page.html?id=${workout.id}` };
+        
+        const iconContainer = document.createElement('div');
+        iconContainer.className = 'workout-icon-container';
+        const iconSVG = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+        iconSVG.setAttribute('viewBox', '0 0 256 256');
+        iconSVG.setAttribute('width', '24');
+        iconSVG.setAttribute('height', '24');
+        iconSVG.setAttribute('fill', 'currentColor');
+        const iconPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        iconPath.setAttribute('d', iconPaths[workout.icon] || iconPaths.Barbell);
+        iconSVG.appendChild(iconPath);
+        iconContainer.appendChild(iconSVG);
+        
+        const textContainer = document.createElement('div');
+        textContainer.className = 'workout-text';
+        const name = document.createElement('p');
+        name.className = 'name';
+        name.textContent = workout.name;
+        const time = document.createElement('p');
+        time.className = 'time';
+        time.textContent = `${workout.startTime} - ${workout.endTime}`;
+        textContainer.appendChild(name);
+        textContainer.appendChild(time);
+        
+        const infoContainer = document.createElement('div');
+        infoContainer.className = 'workout-item-info';
+        infoContainer.appendChild(iconContainer);
+        infoContainer.appendChild(textContainer);
+        
+        const arrowIcon = document.createElement('div');
+        arrowIcon.className = 'arrow-icon';
+        arrowIcon.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 256 256"><path d="M181.66,133.66l-80,80a8,8,0,0,1-11.32-11.32L164.69,128,90.34,53.66a8,8,0,0,1,11.32-11.32l80,80A8,8,0,0,1,181.66,133.66Z"></path></svg>`;
+        
+        item.appendChild(infoContainer);
+        item.appendChild(arrowIcon);
+        
+        return item;
+      }
+
+      // 프로필 정보 로드
+      fetch('./data/profile.json')
+        .then(response => response.json())
+        .then(data => {
+          const profileImageContainer = document.getElementById('profile-image-container');
+          if (data.profileImageUrl) {
+              profileImageContainer.style.backgroundImage = `url('${data.profileImageUrl}')`;
+          }
+          profileImageContainer.addEventListener('click', () => {
+              window.location.href = './profile.html';
+          });
+        })
+        .catch(error => console.error('Error loading profile data:', error));
+
+      loadWorkouts();
+    });
+  </script>
+</body>
+</html> 

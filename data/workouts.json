@@ -1,0 +1,176 @@
+{
+  "workouts": {
+    "2025-06-24": [
+      {
+        "id": "1",
+        "name": "오전 달리기",
+        "startDate": "2025-06-24",
+        "endDate": "2025-06-24",
+        "startTime": "09:00:00",
+        "endTime": "10:00:00",
+        "icon": "Heart",
+        "location": "공원",
+        "purpose": "exercise",
+        "notification": "30m",
+        "notes": "가벼운 조깅으로 시작",
+        "createdAt": "2025-06-20T10:00:00Z",
+        "updatedAt": "2025-06-20T10:00:00Z",
+        "todolist": false
+      }
+    ],
+    "2025-06-25": [
+      {
+        "id": "2",
+        "name": "저녁 홈트",
+        "startDate": "2025-06-25",
+        "endDate": "2025-06-25",
+        "startTime": "20:00:00",
+        "endTime": "21:00:00",
+        "icon": "FlowerLotus",
+        "location": "집",
+        "purpose": "wellness",
+        "notification": "1h",
+        "notes": "스트레스 해소를 위한 홈 트레이닝",
+        "createdAt": "2025-06-20T10:00:00Z",
+        "updatedAt": "2025-06-20T10:00:00Z",
+        "todolist": false
+      }
+    ],
+    "2025-06-27": [
+      {
+        "id": "3",
+        "name": "산책",
+        "startDate": "2025-06-27",
+        "endDate": "2025-06-27",
+        "startTime": "10:00:00",
+        "endTime": "11:00:00",
+        "icon": "Barbell",
+        "location": "공원",
+        "purpose": "exercise",
+        "notification": "30m",
+        "notes": "산책을 하자",
+        "createdAt": "2025-06-20T10:00:00Z",
+        "updatedAt": "2025-06-20T10:00:00Z",
+        "todolist": false
+      },
+      {
+        "id": "4",
+        "name": "오전 달리기",
+        "startDate": "2025-06-27",
+        "endDate": "2025-06-27",
+        "startTime": "11:00:00",
+        "endTime": "12:00:00",
+        "icon": "FlowerLotus",
+        "location": "공원",
+        "purpose": "wellness",
+        "notification": "30m",
+        "notes": "가벼운 조깅으로 시작",
+        "createdAt": "2025-06-20T10:00:00Z",
+        "updatedAt": "2025-06-20T10:00:00Z",
+        "todolist": false
+      },
+      {
+        "id": "5",
+        "name": "유산소 운동",
+        "startDate": "2025-06-27",
+        "endDate": "2025-06-27",
+        "startTime": "12:00:00",
+        "endTime": "13:00:00",
+        "icon": "Heart",
+        "location": "헬스장",
+        "purpose": "exercise",
+        "notification": "30m",
+        "notes": "러닝머신 30분",
+        "createdAt": "2025-06-20T10:00:00Z",
+        "updatedAt": "2025-06-20T10:00:00Z",
+        "todolist": false
+      }
+    ],
+    "2025-06-28": [
+      {
+        "id": "6",
+        "name": "저녁 홈트",
+        "startDate": "2025-06-28",
+        "endDate": "2025-06-28",
+        "startTime": "10:00:00",
+        "endTime": "11:00:00",
+        "icon": "Barbell",
+        "location": "집",
+        "purpose": "",
+        "notification": "",
+        "notes": "스트레스 해소를 위한 홈 트레이닝",
+        "createdAt": "2025-06-20T10:00:00Z",
+        "updatedAt": "2025-06-20T10:00:00Z",
+        "todolist": false
+      },
+      {
+        "id": "7",
+        "name": "프로그래밍",
+        "startDate": "2025-06-28",
+        "endDate": "2025-06-28",
+        "startTime": "11:00:00",
+        "endTime": "12:00:00",
+        "icon": "FlowerLotus",
+        "location": "집",
+        "purpose": "wellness",
+        "notification": "30m",
+        "notes": "코딩",
+        "createdAt": "2025-06-20T10:00:00Z",
+        "updatedAt": "2025-06-20T10:00:00Z",
+        "todolist": false
+      },
+      {
+        "id": "8",
+        "name": "유산소 운동",
+        "startDate": "2025-06-28",
+        "endDate": "2025-06-28",
+        "startTime": "12:00:00",
+        "endTime": "13:00:00",
+        "icon": "Heart",
+        "location": "헬스장",
+        "purpose": "exercise",
+        "notification": "30m",
+        "notes": "러닝머신 30분",
+        "createdAt": "2025-06-20T10:00:00Z",
+        "updatedAt": "2025-06-20T10:00:00Z",
+        "todolist": false
+      }
+    ],
+    "2025-06-29": [
+      {
+        "id": "9",
+        "name": "가슴 운동",
+        "startDate": "2025-06-29",
+        "endDate": "2025-06-29",
+        "startTime": "14:00:00",
+        "endTime": "15:00:00",
+        "icon": "Barbell",
+        "location": "헬스장",
+        "purpose": "exercise",
+        "notification": "30m",
+        "notes": "윗몸 일으키기",
+        "createdAt": "2025-06-20T10:00:00Z",
+        "updatedAt": "2025-06-20T10:00:00Z",
+        "todolist": false
+      }
+    ],
+    "2025-06-30": [
+      {
+        "id": "10",
+        "name": "여행",
+        "startDate": "2025-06-30",
+        "endDate": "2025-06-30",
+        "startTime": "17:00:00",
+        "endTime": "18:00:00",
+        "icon": "Barbell",
+        "location": "여행 장소",
+        "purpose": "exercise",
+        "notification": "30m",
+        "notes": "여행",
+        "createdAt": "2025-06-20T10:00:00Z",
+        "updatedAt": "2025-06-20T10:00:00Z",
+        "todolist": false
+      }
+    ]
+  }
+}

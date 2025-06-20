@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="" />
+    <link
+      rel="stylesheet"
+      as="style"
+      onload="this.rel='stylesheet'"
+      href="https://fonts.googleapis.com/css2?display=swap&amp;family=Manrope%3Awght%40400%3B500%3B700%3B800&amp;family=Noto+Sans%3Awght%40400%3B500%3B700%3B900"
+    />
+
+    <title>Momentum 프로필</title>
+    <link rel="icon" type="image/x-icon" href="data:image/x-icon;base64," />
+
+    <style>
+        html, body {
+            margin: 0; padding: 0; width: 100%;
+            font-family: 'Manrope', 'Noto Sans', sans-serif;
+            background-color: #121317;
+            color: white;
+        }
+        .design-root, .layout-container { display: flex; flex-direction: column; flex-grow: 1; }
+        .main-content { display: flex; flex: 1; justify-content: center; padding: 1.25rem 10rem; }
+        .content-container { display: flex; flex-direction: column; flex: 1; max-width: 960px; }
+        .section-title { font-size: 1.375rem; font-weight: 700; padding: 1.25rem 1rem 0.75rem 1rem; }
+
+        /* --- 헤더 (home.html과 동일) --- */
+        .main-header { display: flex; align-items: center; justify-content: space-between; padding: 0.75rem 2.5rem; border-bottom: 1px solid #2b2d36; }
+        .logo-container { display: flex; align-items: center; gap: 1rem; }
+        .logo-title { font-size: 1.125rem; font-weight: 700; }
+        .header-nav {
+            display: flex;
+            flex: 1;
+            justify-content: flex-end;
+            gap: 2rem;
+            align-items: center;
+            position: relative; /* 팝업 위치의 기준점 */
+        }
+        .nav-links { display: flex; align-items: center; gap: 2.25rem; }
+        .nav-links a { font-size: 0.875rem; font-weight: 500; text-decoration: none; color: white; transition: color 0.2s; }
+        .nav-links a:hover { color: #a2a5b4; }
+        .header-button { display: flex; align-items: center; justify-content: center; height: 2.5rem; width: 2.5rem; background-color: #2b2d36; border-radius: 9999px; border: none; cursor: pointer; color: white; }
+        .profile-image { width: 2.5rem; height: 2.5rem; border-radius: 50%; background-size: cover; background-position: center; }
+
+        .profile-header { display: flex; flex-direction: column; align-items: center; gap: 1rem; padding: 1rem; position: relative; }
+        .profile-main-image { width: 8rem; height: 8rem; border-radius: 50%; background-size: cover; background-position: center; cursor: pointer; border: 4px solid #40424f; }
+        .change-image-btn {
+            position: absolute;
+            top: 7.2rem; 
+            left: calc(50% + 2.5rem); 
+            transform: translateX(-50%); 
+            background-color: #3e58da;
+            color: white;
+            border: 2px solid #121317;
+            border-radius: 2rem; 
+            padding: 0.2rem 0.8rem; 
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+            white-space: nowrap; /* "편집" 글자가 줄바꿈되지 않도록 함 */
+        }
+        .change-image-btn:hover { transform: translateX(-50%) scale(1.1); }
+        .profile-info { display: flex; flex-direction: column; align-items: center; gap: 0.25rem; }
+        .profile-name { font-size: 1.375rem; font-weight: 700; }
+        .profile-sub-info { font-size: 1rem; color: #a2a5b4; }
+        .save-button { min-width: 84px; height: 2.5rem; padding: 0 1rem; background-color: #2b2d36; color: white; border: none; border-radius: 9999px; font-size: 0.875rem; font-weight: 700; cursor: pointer; margin-top: 1rem; }
+        .save-button:hover { background-color: #3a3d4a; }
+
+        /* 탭 메뉴 */
+        .tabs { display: flex; border-bottom: 1px solid #40424f; padding: 0 1rem; gap: 2rem; }
+        .tab-item { padding: 1rem 0.25rem; border-bottom: 3px solid transparent; font-size: 0.875rem; font-weight: 700; color: #a2a5b4; cursor: pointer; }
+        .tab-item.active { color: white; border-bottom-color: white; }
+
+        /* 통계 */
+        .content-section { padding: 0.75rem 1rem; }
+        .stats-grid { display: flex; flex-wrap: wrap; gap: 1rem; }
+        .stat-card { 
+            flex: 1; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            gap: 0.5rem; 
+            padding: 1.25rem; 
+            background: linear-gradient(145deg, #2a2d37, #1e1f25);
+            border: 1px solid #40424f; 
+            border-radius: 0.75rem; 
+            min-width: 120px;
+            box-shadow: 5px 5px 10px #1a1b1f, -5px -5px 10px #30313a;
+            transition: transform 0.2s ease-in-out;
+        }
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+        .stat-value { font-size: 2rem; font-weight: 800; color: #e2e8f0; }
+        .stat-value span { font-size: 1rem; font-weight: 500; color: #a2a5b4; margin-left: 0.25rem; }
+        .stat-label { font-size: 0.875rem; color: #a2a5b4; text-align: center; }
+        
+        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.5rem; }
+        .form-group label { font-size: 1rem; font-weight: 500; display: block; margin-bottom: 0.5rem; }
+        .form-input { width: 100%; padding: 0.75rem 1rem; background-color: #1e1f25; border: 1px solid #40424f; border-radius: 0.5rem; color: #f0f0f0; font-size: 1rem; box-sizing: border-box; }
+        .form-input:focus { outline: none; border-color: #3e58da; }
+
+        /*이미지 선택 모달*/
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 3000;
+        }
+        .modal-content {
+            background-color: #1e1f25;
+            padding: 2rem;
+            border-radius: 0.75rem;
+            width: 80%;
+            max-width: 800px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; }
+        .modal-title { font-size: 1.5rem; font-weight: 700; }
+        .close-modal-btn { background: none; border: none; color: white; font-size: 2rem; cursor: pointer; }
+        .image-selection-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 1rem;
+        }
+        .image-selection-grid img {
+            width: 100%;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            border: 3px solid transparent;
+            transition: border-color 0.2s;
+        }
+        .image-selection-grid img:hover, .image-selection-grid img.selected {
+            border-color: #3e58da;
+        }
+
+        /* --- 알림 팝업 스타일 --- */
+        .notification-popup {
+            position: absolute;
+            top: calc(100% + 10px);
+            right: 0;
+            width: 320px;
+            background-color: #1f2028;
+            border-radius: 0.75rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+            border: 1px solid #3a3c47;
+            z-index: 2000;
+            padding: 0.5rem;
+            display: none; /* 기본 숨김 처리 */
+            opacity: 0;
+            transform: translateY(10px);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+
+        .notification-popup.visible {
+            display: block; /* JS로 컨트롤 */
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .notification-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 1rem;
+            font-weight: 600;
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid #3a3c47;
+            color: #e2e2e2;
+        }
+        
+        .notification-list {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .notification-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            border-bottom: 1px solid #2a2c37;
+            text-decoration: none;
+            color: #d1d5db;
+            transition: background-color 0.2s ease;
+        }
+
+        .notification-item:last-child {
+            border-bottom: none;
+        }
+
+        .notification-item:hover {
+            background-color: #2a2c37;
+        }
+
+        .notification-item-name {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: #f0f0f0;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 160px;
+        }
+
+        .notification-item-status {
+            font-size: 0.875rem;
+            padding: 0.25rem 0.6rem;
+            border-radius: 9999px;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+
+        .notification-item-status.before {
+            background-color: rgba(59, 130, 246, 0.2);
+            color: #60a5fa;
+        }
+
+        .notification-item-status.in-progress {
+            background-color: rgba(16, 185, 129, 0.2);
+            color: #34d399;
+        }
+
+        .notification-item-status.after {
+            background-color: rgba(74, 74, 82, 0.5);
+            color: #a2a5b4;
+        }
+        
+        .no-notification-item {
+            padding: 2rem 1rem;
+            text-align: center;
+            font-size: 0.875rem;
+            color: #9fa3b7;
+        }
+
+        .notification-footer {
+            padding-top: 0.75rem;
+            margin: 0 0.5rem;
+            border-top: 1px solid #3a3c47;
+            text-align: right;
+        }
+
+        .notification-close-button {
+            background-color: #3b82f6;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+
+        .notification-close-button:hover {
+            background-color: #2563eb;
+        }
+    </style>
+  </head>
+  <body>
+    <div class="design-root">
+      <div class="layout-container">
+        <header class="main-header">
+          <div class="logo-container">
+            <div class="logo-icon">
+              <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect width="48" height="48" rx="12" fill="#4F46E5"/>
+                <path d="M14 24L22 32L34 16" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M14 24L22 32L34 16" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" opacity="0.3"/>
+              </svg>
+            </div>
+            <h2 class="logo-title">Momentum</h2>
+          </div>
+          <div class="header-nav">
+            <div class="nav-links">
+              <a href="./home.html">홈</a>
+              <a href="./calender.html">캘린더</a>
+              <a href="./todo-list.html">오늘 할 일</a>
+            </div>
+            <button class="header-button" id="notification-bell-button">
+              <div data-icon="Bell" data-size="20px" data-weight="regular">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20px" height="20px" fill="currentColor" viewBox="0 0 256 256">
+                  <path
+                    d="M221.8,175.94C216.25,166.38,208,139.33,208,104a80,80,0,1,0-160,0c0,35.34-8.26,62.38-13.81,71.94A16,16,0,0,0,48,200H88.81a40,40,0,0,0,78.38,0H208a16,16,0,0,0,13.8-24.06ZM128,216a24,24,0,0,1-22.62-16h45.24A24,24,0,0,1,128,216ZM48,184c7.7-13.24,16-43.92,16-80a64,64,0,1,1,128,0c0,36.05,8.28,66.73,16,80Z"
+                  ></path>
+                </svg>
+              </div>
+            </button>
+            <div class="profile-image" style="background-image: './assets/natural-6693234.jpg';"></div>
+          </div>
+        </header>
+        <div class="main-content">
+          <div class="content-container">
+            <div class="profile-header">
+              <div id="profile-main-image" class="profile-main-image"></div>
+              <button id="change-image-btn" class="change-image-btn" title="이미지 변경">
+                  편집
+              </button>
+              <div class="profile-info">
+                <p id="profile-name-display" class="profile-name"></p>
+                <p id="profile-email-display" class="profile-sub-info"></p>
+                <p id="profile-joined-display" class="profile-sub-info"></p>
+              </div>
+              <button id="save-btn" class="save-button">프로필 저장</button>
+            </div>
+
+            <div class="tabs">
+              <div id="stats-tab" class="tab-item active">통계</div>
+              <div id="personal-info-tab" class="tab-item">개인정보</div>
+            </div>
+
+            <div id="stats-view">
+            <div class="content-section">
+              <div class="stats-grid">
+                <div class="stat-card">
+                  <p id="stat-workouts" class="stat-value">0</p>
+                    <p class="stat-label">총 계획</p>
+                </div>
+                <div class="stat-card">
+                    <p id="stat-challenges" class="stat-value">0</p>
+                    <p class="stat-label">주간 목표</p>
+                </div>
+                <div class="stat-card">
+                    <p id="stat-days" class="stat-value">0</p>
+                    <p class="stat-label">Momentum과 함께한 날</p>
+                </div>
+              </div>
+            </div>
+
+            <div id="goals-section">
+                <h2 class="section-title">목표</h2>
+              <div class="content-section form-grid">
+                <div class="form-group">
+                    <label for="goal-workouts">주간 운동 횟수</label>
+                  <input type="number" id="goal-workouts" class="form-input">
+                </div>
+                </div>
+              </div>
+            </div>
+
+            <div id="personal-info-view" style="display: none;">
+            <div id="personal-info-section">
+                <h2 class="section-title">개인 정보</h2>
+              <div class="content-section form-grid">
+                <div class="form-group">
+                    <label for="info-name">이름</label>
+                  <input type="text" id="info-name" class="form-input">
+                </div>
+                <div class="form-group">
+                    <label for="info-email">이메일</label>
+                  <input type="email" id="info-email" class="form-input">
+                </div>
+                <div class="form-group">
+                      <label for="info-join-date">가입일</label>
+                      <input type="date" id="info-join-date" class="form-input">
+                  </div>
+                  <div class="form-group">
+                    <label for="info-gender">성별</label>
+                  <input type="text" id="info-gender" class="form-input">
+                </div>
+                <div class="form-group">
+                    <label for="info-age">나이</label>
+                  <input type="number" id="info-age" class="form-input">
+                </div>
+                <div class="form-group">
+                    <label for="info-height">키 (cm)</label>
+                  <input type="number" id="info-height" class="form-input">
+                </div>
+                <div class="form-group">
+                    <label for="info-weight">체중 (kg)</label>
+                  <input type="number" id="info-weight" class="form-input">
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 이미지 선택 모달 -->
+      <div id="image-modal" class="modal-overlay">
+          <div class="modal-content">
+              <div class="modal-header">
+                  <h2 class="modal-title">프로필 이미지 선택</h2>
+                  <button id="close-modal-btn" class="close-modal-btn">&times;</button>
+              </div>
+              <div id="image-selection-grid" class="image-selection-grid">
+              </div>
+          </div>
+      </div>
+
+      <script>
+      document.addEventListener('DOMContentLoaded', () => {
+          // 데이터 표시 DOM 요소
+          const profileHeaderImage = document.querySelector('.main-header .profile-image');
+          const profileMainImage = document.getElementById('profile-main-image');
+          const profileNameDisplay = document.getElementById('profile-name-display');
+          const profileEmailDisplay = document.getElementById('profile-email-display');
+          const profileJoinedDisplay = document.getElementById('profile-joined-display');
+
+          const statWorkouts = document.getElementById('stat-workouts');
+          const statChallenges = document.getElementById('stat-challenges');
+          const statDays = document.getElementById('stat-days');
+
+          // 입력 폼 DOM 요소
+          const goalWorkoutsInput = document.getElementById('goal-workouts');
+          const infoNameInput = document.getElementById('info-name');
+          const infoEmailInput = document.getElementById('info-email');
+          const infoGenderInput = document.getElementById('info-gender');
+          const infoAgeInput = document.getElementById('info-age');
+          const infoHeightInput = document.getElementById('info-height');
+          const infoWeightInput = document.getElementById('info-weight');
+          const infoJoinDateInput = document.getElementById('info-join-date');
+
+          const saveButton = document.getElementById('save-btn');
+
+          // 탭 요소
+          const statsTab = document.getElementById('stats-tab');
+          const personalInfoTab = document.getElementById('personal-info-tab');
+          const statsView = document.getElementById('stats-view');
+          const personalInfoView = document.getElementById('personal-info-view');
+
+          // 로드된 프로필 데이터를 저장할 변수
+          let loadedProfileData = {};
+
+          // 이미지 목록 가져와서 모달에 채우기
+          //이거 구현하는데 진짜 애먹었습니다.
+          fetch('/api/images')
+              .then(res => res.json())
+              .then(images => {
+                  images.forEach(imageUrl => {
+                      const img = document.createElement('img');
+                      img.src = imageUrl;
+                      img.dataset.url = imageUrl;
+                      img.addEventListener('click', () => {
+                          // 모든 이미지의 'selected' 클래스 제거
+                          document.querySelectorAll('.image-selection-grid img').forEach(i => i.classList.remove('selected'));
+                          // 클릭된 이미지에 'selected' 클래스 추가
+                          img.classList.add('selected');
+
+                          // 프로필 이미지 즉시 변경
+                          profileHeaderImage.style.backgroundImage = `url('${imageUrl}')`;
+                          profileMainImage.style.backgroundImage = `url('${imageUrl}')`;
+                          
+                          // 선택된 URL을 임시 데이터에 저장
+                          loadedProfileData.profileImageUrl = imageUrl;
+                          
+                          // 모달 닫기
+                          imageModal.style.display = 'none';
+                      });
+                      imageSelectionGrid.appendChild(img);
+                  });
+              });
+
+          // 프로필 데이터 로드
+          const profilePromise = fetch(`./data/profile.json?v=${new Date().getTime()}`).then(res => res.json());
+          const workoutsPromise = fetch(`./data/workouts.json?v=${new Date().getTime()}`).then(res => res.json());
+
+          Promise.all([profilePromise, workoutsPromise])
+              .then(([profileData, workoutsData]) => {
+                  loadedProfileData = profileData; 
+
+                  // 상단 프로필 정보 표시
+                  profileHeaderImage.style.backgroundImage = `url('${profileData.profileImageUrl}')`;
+                  profileMainImage.style.backgroundImage = `url('${profileData.profileImageUrl}')`;
+                  profileNameDisplay.textContent = profileData.name;
+                  profileEmailDisplay.textContent = profileData.email;
+                  const joinYear = new Date(profileData.joinDate).getFullYear();
+                  profileJoinedDisplay.textContent = `${joinYear}년에 가입`;
+
+                  // 통계 정보 계산 및 표시
+                  const totalPlans = Object.values(workoutsData.workouts).reduce((total, day) => total + day.length, 0);
+                  statWorkouts.textContent = totalPlans;
+
+                  statChallenges.textContent = profileData.goals.weeklyWorkouts;
+              
+                  const joinDate = new Date(profileData.joinDate);
+                  const today = new Date();
+                  const diffTime = Math.abs(today - joinDate);
+                  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                  statDays.innerHTML = `${diffDays}<span>일</span>`;
+                  
+                  // 목표 폼 채우기
+                  goalWorkoutsInput.value = profileData.goals.weeklyWorkouts;
+              
+                  // 개인정보 폼 채우기
+                  infoNameInput.value = profileData.name;
+                  infoEmailInput.value = profileData.email;
+                  infoGenderInput.value = profileData.personalInfo.gender;
+                  infoAgeInput.value = profileData.personalInfo.age;
+                  infoHeightInput.value = profileData.personalInfo.height;
+                  infoWeightInput.value = profileData.personalInfo.weight;
+                  infoJoinDateInput.value = profileData.joinDate;
+              })
+              .catch(error => console.error('Error loading data:', error));
+
+          // 저장 버튼 기능
+          saveButton.addEventListener('click', () => {
+              const updatedProfile = {
+                  joinDate: infoJoinDateInput.value,
+                  profileImageUrl: loadedProfileData.profileImageUrl,
+                  name: infoNameInput.value,
+                  email: infoEmailInput.value,
+                  goals: {
+                      weeklyWorkouts: parseInt(goalWorkoutsInput.value, 10) || 0,
+                  },
+                  personalInfo: {
+                      gender: infoGenderInput.value,
+                      age: parseInt(infoAgeInput.value, 10) || 0,
+                      height: parseInt(infoHeightInput.value, 10) || 0,
+                      weight: parseInt(infoWeightInput.value, 10) || 0,
+                  }
+              };
+
+              fetch('/api/profile', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify(updatedProfile),
+              })
+              .then(response => response.json())
+              .then(data => {
+                  if (data.success) {
+                      alert(data.message);
+                      profileNameDisplay.textContent = updatedProfile.name;
+                      loadedProfileData = updatedProfile;
+                  } else {
+                      alert('오류: ' + data.message);
+                  }
+              })
+              .catch(error => {
+                  console.error('프로필 저장 요청 실패:', error);
+                  alert('프로필 저장 중 문제가 발생했습니다.');
+              });
+          });
+
+          // 모달 열고 닫는 기능
+          const changeImageBtn = document.getElementById('change-image-btn');
+          const closeModalBtn = document.getElementById('close-modal-btn');
+          const imageSelectionGrid = document.getElementById('image-selection-grid');
+          const imageModal = document.getElementById('image-modal');
+          const modalOverlay = document.querySelector('.modal-overlay');
+
+          changeImageBtn.addEventListener('click', () => { imageModal.style.display = 'flex'; });
+          profileMainImage.addEventListener('click', () => { imageModal.style.display = 'flex'; });
+          closeModalBtn.addEventListener('click', () => { imageModal.style.display = 'none'; });
+          modalOverlay.addEventListener('click', (e) => {
+              if (e.target === modalOverlay) {
+                  imageModal.style.display = 'none';
+              }
+          });
+          
+          // 탭 전환 기능
+          statsTab.addEventListener('click', () => {
+              statsTab.classList.add('active');
+              personalInfoTab.classList.remove('active');
+              statsView.style.display = 'block';
+              personalInfoView.style.display = 'none';
+          });
+
+          personalInfoTab.addEventListener('click', () => {
+              personalInfoTab.classList.add('active');
+              statsTab.classList.remove('active');
+              personalInfoView.style.display = 'block';
+              statsView.style.display = 'none';
+          });
+      });
+      </script>
+      <script src="js/notifications.js"></script>
+  </body>
+</html>
+
+

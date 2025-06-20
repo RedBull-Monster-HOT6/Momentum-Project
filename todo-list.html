@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="" />
+    <link
+      rel="stylesheet"
+      as="style"
+      onload="this.rel='stylesheet'"
+      href="https://fonts.googleapis.com/css2?display=swap&amp;family=Manrope%3Awght%40400%3B500%3B700%3B800&amp;family=Noto+Sans%3Awght%40400%3B500%3B700%3B900"
+    />
+
+    <title>오늘 할 일 - Momentum</title>
+    <link rel="icon" type="image/x-icon" href="data:image/x-icon;base64," />
+
+    <style>
+      html, body { margin: 0; padding: 0; width: 100%; font-family: 'Manrope', 'Noto Sans', sans-serif; background-color: #121217; color: white; }
+      .design-root, .layout-container { display: flex; flex-direction: column; flex-grow: 1; }
+      .main-content { display: flex; flex: 1; justify-content: center; padding: 1.25rem 10rem; }
+      .content-container { display: flex; flex-direction: column; flex: 1; max-width: 960px; }
+      .section-padding { padding: 1rem; }
+
+
+      .main-header { display: flex; align-items: center; justify-content: space-between; padding: 0.75rem 2.5rem; border-bottom: 1px solid #2a2c37; white-space: nowrap; }
+      .logo-container { display: flex; align-items: center; gap: 1rem; }
+      .logo-icon { width: 1rem; height: 1rem; }
+      .logo-title { font-size: 1.125rem; font-weight: 700; }
+      .header-nav { display: flex; flex: 1; justify-content: flex-end; gap: 2rem; align-items: center; position: relative; }
+      .nav-links { display: flex; align-items: center; gap: 2.25rem; }
+      .nav-links a { font-size: 0.875rem; font-weight: 500; text-decoration: none; color: white; transition: color 0.2s; }
+      .nav-links a:hover { color: #9fa3b7; }
+      .header-button { display: flex; align-items: center; justify-content: center; height: 2.5rem; width: 2.5rem; background-color: #2a2c37; border-radius: 9999px; padding: 0.625rem; border: none; cursor: pointer; color: white; }
+      .profile-image { width: 2.5rem; height: 2.5rem; border-radius: 50%; background-size: cover; background-position: center; cursor: pointer; }
+
+
+      .page-header { display: flex; flex-direction: column; gap: 0.75rem; }
+      .page-title { font-size: 2rem; font-weight: 700; letter-spacing: 0.025em; }
+      .page-subtitle { font-size: 0.875rem; color: #a2a5b4; }
+
+
+      .view-switcher { padding: 0.75rem 0; }
+      .view-switcher-inner { display: flex; align-items: center; justify-content: center; height: 2.5rem; background-color: #2b2d36; border-radius: 9999px; padding: 0.25rem; }
+      .view-switcher-label { display: flex; flex-grow: 1; align-items: center; justify-content: center; height: 100%; padding: 0 0.5rem; border-radius: 9999px; color: #a2a5b4; font-size: 0.875rem; font-weight: 500; cursor: pointer; transition: all 0.2s; }
+      .view-switcher-label input { display: none; }
+      .view-switcher-label input:checked + span { background-color: #121317; color: white; box-shadow: 0 0 4px rgba(0,0,0,0.1); display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; border-radius: 9999px; }
+
+
+      .todo-list-container { padding: 0 1rem; }
+      .todo-item { display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 0; }
+      .todo-item label { display: flex; align-items: center; gap: 0.75rem; font-size: 1rem; cursor: pointer; }
+      .todo-item input[type="checkbox"] { appearance: none; -webkit-appearance: none; width: 1.25rem; height: 1.25rem; border: 2px solid #40424f; border-radius: 0.25rem; background-color: transparent; cursor: pointer; position: relative; }
+      .todo-item input[type="checkbox"]:checked { background-color: #808fda; border-color: #808fda; }
+      .todo-item input[type="checkbox"]:checked::after { content: '✔'; color: #121317; font-size: 1rem; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); }
+      .todo-item p.completed { text-decoration: line-through; color: #a2a5b4; }
+      
+
+      .notification-popup {
+          position: absolute;
+          top: calc(100% + 10px);
+          right: 0;
+          width: 320px;
+          background-color: #1f2028;
+          border-radius: 0.75rem;
+          box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+          border: 1px solid #3a3c47;
+          z-index: 2000;
+          padding: 0.5rem;
+          display: none;
+          opacity: 0;
+          transform: translateY(10px);
+          transition: opacity 0.3s ease, transform 0.3s ease;
+      }
+  
+      .notification-popup.visible {
+          opacity: 1;
+          transform: translateY(0);
+      }
+  
+      .notification-header {
+          font-size: 1rem;
+          font-weight: 600;
+          padding: 0.75rem 1rem;
+          border-bottom: 1px solid #3a3c47;
+          color: #e2e2e2;
+      }
+  
+      .notification-item {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding: 1rem;
+          border-bottom: 1px solid #2a2c37;
+          text-decoration: none;
+          color: inherit;
+          transition: background-color 0.2s ease;
+      }
+  
+      .notification-item:last-child {
+          border-bottom: none;
+      }
+  
+      .notification-item:hover {
+          background-color: #2a2c37;
+      }
+  
+      .notification-item-name {
+          font-size: 0.875rem;
+          font-weight: 500;
+          color: #f0f0f0;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          max-width: 160px;
+      }
+  
+      .notification-item-status {
+          font-size: 0.875rem;
+          padding: 0.25rem 0.6rem;
+          border-radius: 9999px;
+          font-weight: 600;
+          flex-shrink: 0;
+      }
+  
+      .notification-item-status.before {
+          background-color: rgba(59, 130, 246, 0.2);
+          color: #60a5fa;
+      }
+  
+      .notification-item-status.in-progress {
+          background-color: rgba(16, 185, 129, 0.2);
+          color: #34d399;
+      }
+  
+      .notification-item-status.after {
+          background-color: rgba(74, 74, 82, 0.5);
+          color: #a2a5b4;
+      }
+
+      /* --- 버튼 --- */
+      .button-container { display: flex; justify-content: flex-end; padding: 0.75rem 0; }
+      .add-button { min-width: 84px; height: 2.5rem; padding: 0 1rem; background-color: #2b2d36; color: white; border: none; border-radius: 9999px; font-size: 0.875rem; font-weight: 700; cursor: pointer; }
+      .add-button:hover { background-color: #3a3d4a; }
+
+      /* 할일 목록 스타일 보강 */
+      .todo-date-header {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #e2e2e2;
+        margin-top: 1.5rem;
+        margin-bottom: 0.5rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 1px solid #2a2c37;
+      }
+      .empty-message, .error-message {
+        color:#a2a5b4; 
+        padding: 2rem 0;
+        text-align: center;
+      }
+
+      /* 플로팅 추가 버튼 스타일 */
+      .add-button-container {
+        position: fixed;
+        bottom: 2rem;
+        right: 2rem;
+        z-index: 1000;
+      }
+      .add-button {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 4rem;
+        height: 4rem;
+        min-width: 0;
+        padding: 0;
+        background-color: #3b82f6;
+        border: none;
+        border-radius: 50%;
+        cursor: pointer;
+        color: white;
+        transition: all 0.3s ease-in-out;
+        box-shadow: 0 8px 24px rgba(59, 130, 246, 0.4);
+        position: relative;
+        overflow: visible;
+      }
+      .add-button::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, transparent 70%);
+        border-radius: 50%;
+        opacity: 0;
+        transition: opacity 0.3s ease-in-out;
+      }
+      .add-button::after {
+        content: '새 일정 만들기';
+        position: absolute;
+        right: calc(100% + 12px);
+        top: 50%;
+        transform: translateY(-50%);
+        background-color: #1a1b23;
+        color: white;
+        padding: 0.75rem 1rem;
+        border-radius: 0.5rem;
+        font-size: 0.875rem;
+        font-weight: 500;
+        white-space: nowrap;
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.3s ease-in-out;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        border: 1px solid #2a2c37;
+      }
+      .add-button:hover::after {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(-50%) translateX(-4px);
+      }
+      .add-button:hover {
+        background-color: #2563eb;
+        transform: translateY(-4px) scale(1.05);
+        box-shadow: 0 12px 32px rgba(59, 130, 246, 0.6);
+      }
+      .add-button:hover::before {
+        opacity: 1;
+      }
+      .add-button:active {
+        transform: translateY(-2px) scale(1.02);
+        box-shadow: 0 6px 20px rgba(59, 130, 246, 0.5);
+      }
+      .add-button svg {
+        width: 1.5rem;
+        height: 1.5rem;
+        transition: transform 0.3s ease-in-out;
+      }
+      .add-button:hover svg {
+        transform: rotate(90deg);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="design-root">
+      <div class="layout-container">
+        <header class="main-header">
+          <div class="logo-container">
+            <div class="logo-icon">
+              <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect width="48" height="48" rx="12" fill="#4F46E5"/>
+                <path d="M14 24L22 32L34 16" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M14 24L22 32L34 16" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" opacity="0.3"/>
+              </svg>
+            </div>
+            <h2 class="logo-title">Momentum</h2>
+          </div>
+          <nav class="header-nav">
+            <div class="nav-links">
+              <a href="./home.html">홈</a>
+              <a href="./calender.html">캘린더</a>
+              <a href="./todo-list.html">오늘 할 일</a>
+            </div>
+            <button class="header-button" id="notification-bell-button">
+              <div style="width: 20px; height: 20px;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20px" height="20px" fill="currentColor" viewBox="0 0 256 256">
+                  <path
+                    d="M221.8,175.94C216.25,166.38,208,139.33,208,104a80,80,0,1,0-160,0c0,35.34-8.26,62.38-13.81,71.94A16,16,0,0,0,48,200H88.81a40,40,0,0,0,78.38,0H208a16,16,0,0,0,13.8-24.06ZM128,216a24,24,0,0,1-22.62-16h45.24A24,24,0,0,1,128,216ZM48,184c7.7-13.24,16-43.92,16-80a64,64,0,1,1,128,0c0,36.05,8.28,66.73,16,80Z"
+                  ></path>
+                </svg>
+              </div>
+            </button>
+            <div id="profile-image-container" class="profile-image"></div>
+          </nav>
+        </header>
+
+        <main class="main-content">
+          <div class="content-container">
+            <div class="page-header section-padding">
+              <h1 class="page-title">오늘 할 일</h1>
+              <p id="current-date" class="page-subtitle"></p>
+            </div>
+
+            <div id="todo-list-container">
+              <!-- Dynamic content will be injected here -->
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+    <div class="add-button-container">
+      <button class="add-button" onclick="window.location.href='./edit.html'">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 256 256"><path d="M224,128a8,8,0,0,1-8,8H136v80a8,8,0,0,1-16,0V136H40a8,8,0,0,1,0-16h80V40a8,8,0,0,1,16,0v80h80A8,8,0,0,1,224,128Z"></path></svg>
+      </button>
+    </div>
+    <script src="js/notifications.js"></script>
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // --- 프로필 이미지 로드 ---
+        fetch('./data/profile.json')
+          .then(response => response.json())
+          .then(data => {
+            const profileImageContainer = document.getElementById('profile-image-container');
+            if (data.profileImageUrl) {
+                profileImageContainer.style.backgroundImage = `url('${data.profileImageUrl}')`;
+            }
+            profileImageContainer.addEventListener('click', () => {
+                window.location.href = './profile.html';
+            });
+          })
+          .catch(error => console.error('Error loading profile data:', error));
+
+        // --- UI 요소 참조 ---
+        const listContainer = document.getElementById('todo-list-container');
+        const currentDateEl = document.getElementById('current-date');
+
+        const formatKR = (d)=> d.toLocaleDateString('ko-KR',{year:'numeric',month:'long',day:'numeric'});
+
+        function updateSubtitle(dates){
+          if(dates.length===0){currentDateEl.textContent='';return;}
+          const first=formatKR(new Date(dates[0]+'T00:00:00'));
+          const last=formatKR(new Date(dates[dates.length-1]+'T00:00:00'));
+          currentDateEl.textContent = dates.length===1? first : `${first} ~ ${last}`;
+        }
+
+        async function loadAndRenderTodos() {
+            try {
+                const response = await fetch('./data/workouts.json');
+                const data = await response.json();
+                const workoutsByDate = data.workouts || {}; // workouts 키 내부의 객체를 사용
+                
+                const oneMonthAgo = new Date();
+                oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
+                oneMonthAgo.setHours(0, 0, 0, 0); // 날짜 비교를 위해 시간 초기화
+
+                const todosToRender = Object.entries(workoutsByDate)
+                    .filter(([date]) => new Date(date) >= oneMonthAgo) // 1달 이전 데이터만 필터링
+                    .reduce((acc, [date, workouts]) => {
+                        if (workouts.length > 0) { // 해당 날짜에 일정이 있으면 추가
+                            acc[date] = workouts;
+                        }
+                        return acc;
+                    }, {});
+                
+                // 날짜 오름차순으로 정렬
+                const sortedTodos = Object.fromEntries(
+                    Object.entries(todosToRender).sort(([dateA], [dateB]) => new Date(dateA) - new Date(dateB))
+                );
+
+                updateSubtitle(Object.keys(sortedTodos));
+
+                // 2. HTML 렌더링
+                renderTodoList(sortedTodos);
+            } catch (error) {
+                console.error('할 일 목록 로딩 중 오류 발생:', error);
+                listContainer.innerHTML = '<p class="error-message">목록을 불러오는 데 실패했습니다.</p>';
+            }
+        }
+
+        /**
+         * 가공된 운동 데이터를 기반으로 HTML 목록을 생성합니다.
+         * @param {object} workoutsByDate - 날짜별로 그룹화된 운동 데이터
+         */
+        function renderTodoList(workoutsByDate) {
+            listContainer.innerHTML = ''; // 기존 목록 초기화
+
+            if (Object.keys(workoutsByDate).length === 0) {
+                listContainer.innerHTML = '<p class="empty-message">표시할 일정이 없습니다.</p>';
+                return;
+            }
+
+            for (const [date, workouts] of Object.entries(workoutsByDate)) {
+                const dateHeader = document.createElement('h3');
+                dateHeader.className = 'todo-date-header';
+                dateHeader.textContent = new Date(date + 'T00:00:00').toLocaleDateString('ko-KR', {
+                    year: 'numeric', month: 'long', day: 'numeric', weekday: 'long'
+                });
+                listContainer.appendChild(dateHeader);
+
+                workouts.forEach(workout => {
+                    const item = createTodoItemElement(workout, date);
+                    listContainer.appendChild(item);
+                });
+            }
+        }
+        
+        function createTodoItemElement(workout, date) {
+            const item = document.createElement('div');
+            item.className = 'todo-item';
+
+            const label = document.createElement('label');
+            
+            const checkbox = document.createElement('input');
+            checkbox.type = 'checkbox';
+            checkbox.checked = !!workout.todolist;
+            checkbox.dataset.id = workout.id;
+            checkbox.dataset.date = date;
+            
+            const text = document.createElement('p');
+            text.textContent = workout.name;
+            if (checkbox.checked) {
+                text.classList.add('completed');
+            }
+
+            label.appendChild(checkbox);
+            label.appendChild(text);
+            item.appendChild(label);
+
+            return item;
+        }
+
+        async function updateTodoStatus(id, date, is_checked) {
+            try {
+                const response = await fetch('/api/todo/update', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id, date, is_checked })
+                });
+                const result = await response.json();
+                if (!result.success) {
+                    console.error('상태 업데이트 실패:', result.message);
+                }
+            } catch (error) {
+                console.error('상태 업데이트 중 네트워크 오류:', error);
+            }
+        }
+        
+        //이벤트 리스너
+        listContainer.addEventListener('change', (e) => {
+            if (e.target.type === 'checkbox') {
+                const checkbox = e.target;
+                const text = checkbox.nextElementSibling;
+                text.classList.toggle('completed', checkbox.checked);
+                
+                const { id, date } = checkbox.dataset;
+                updateTodoStatus(id, date, checkbox.checked);
+            }
+        });
+
+        //초기 데이터 로드용 함수
+        loadAndRenderTodos();
+    });
+    </script>
+  </body>
+</html>
+

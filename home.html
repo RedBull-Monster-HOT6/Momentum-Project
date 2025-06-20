@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="" />
+    <link
+      rel="stylesheet"
+      as="style"
+      onload="this.rel='stylesheet'"
+      href="https://fonts.googleapis.com/css2?display=swap&amp;family=Manrope%3Awght%40400%3B500%3B700%3B800&amp;family=Noto+Sans%3Awght%40400%3B500%3B700%3B900"
+    />
+
+    <title>Momentum 홈</title>
+    <link rel="icon" type="image/x-icon" href="data:image/x-icon;base64," />
+
+    <style>
+      /* --- 기본 & 레이아웃 --- */
+      html, body {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        font-family: 'Manrope', 'Noto Sans', sans-serif;
+        background-color: #121217;
+        color: white;
+      }
+      .design-root {
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+        width: 100%;
+      }
+      .layout-container {
+        display: flex;
+        flex-direction: column;
+        flex-grow: 1;
+      }
+      .main-content {
+        display: flex;
+        flex: 1;
+        justify-content: center;
+        padding: 0.5rem 10rem;
+      }
+      .content-container {
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+        max-width: 960px;
+      }
+      .section-padding {
+        padding: 0.75rem 1rem;
+      }
+      .section-title {
+        font-size: 1.125rem;
+        font-weight: 700;
+        letter-spacing: -0.015em;
+        padding: 0.75rem 1rem 0.5rem 1rem;
+      }
+
+      /* --- 헤더 --- */
+      .main-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0.75rem 2.5rem;
+        border-bottom: 1px solid #2a2c37;
+        white-space: nowrap;
+      }
+      .logo-container {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+      }
+      .logo-icon {
+        width: 1rem;
+        height: 1rem;
+        color: white;
+      }
+      .logo-title {
+        font-size: 1.125rem;
+        font-weight: 700;
+        letter-spacing: -0.015em;
+      }
+      .header-nav {
+        display: flex;
+        flex: 1;
+        justify-content: flex-end;
+        gap: 2rem;
+        align-items: center;
+        position: relative;
+      }
+      .nav-links {
+        display: flex;
+        align-items: center;
+        gap: 2.25rem;
+      }
+      .nav-links a {
+        font-size: 0.875rem;
+        font-weight: 500;
+        text-decoration: none;
+        color: white;
+        transition: color 0.2s ease-in-out;
+      }
+      .nav-links a:hover { color: #9fa3b7; }
+      .header-button {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 2.5rem;
+        width: 2.5rem;
+        background-color: #2a2c37;
+        border-radius: 9999px;
+        padding: 0.625rem;
+        border: none;
+        cursor: pointer;
+        color: white;
+      }
+      .header-button svg { width: 20px; height: 20px; }
+      .profile-image {
+        width: 2.5rem;
+        height: 2.5rem;
+        border-radius: 50%;
+        background-size: cover;
+        background-position: center;
+      }
+
+      /* --- 알림 팝업 --- */
+      .notification-popup {
+          position: absolute;
+          top: calc(100% + 10px);
+          right: 0;
+          width: 320px;
+          background-color: #1f2028;
+          border-radius: 0.75rem;
+          box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+          border: 1px solid #3a3c47;
+          z-index: 2000;
+          padding: 0.5rem;
+          display: none;
+          opacity: 0;
+          transform: translateY(10px);
+          transition: opacity 0.3s ease, transform 0.3s ease;
+      }
+  
+      .notification-popup.visible {
+          opacity: 1;
+          transform: translateY(0);
+      }
+  
+      .notification-header {
+          font-size: 1rem;
+          font-weight: 600;
+          padding: 0.75rem 1rem;
+          border-bottom: 1px solid #3a3c47;
+          color: #e2e2e2;
+      }
+  
+      .notification-item {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding: 1rem;
+          border-bottom: 1px solid #2a2c37;
+          text-decoration: none;
+          color: inherit;
+          transition: background-color 0.2s ease;
+      }
+  
+      .notification-item:last-child {
+          border-bottom: none;
+      }
+  
+      .notification-item:hover {
+          background-color: #2a2c37;
+      }
+  
+      .notification-item-name {
+          font-size: 0.875rem;
+          font-weight: 500;
+          color: #f0f0f0;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          max-width: 160px;
+      }
+  
+      .notification-item-status {
+          font-size: 0.875rem;
+          padding: 0.25rem 0.6rem;
+          border-radius: 9999px;
+          font-weight: 600;
+          flex-shrink: 0;
+      }
+  
+      .notification-item-status.before {
+          background-color: rgba(59, 130, 246, 0.2);
+          color: #60a5fa;
+      }
+  
+      .notification-item-status.in-progress {
+          background-color: rgba(16, 185, 129, 0.2);
+          color: #34d399;
+      }
+  
+      .notification-item-status.after {
+          background-color: rgba(74, 74, 82, 0.5);
+          color: #a2a5b4;
+      }
+
+      /* --- 페이지 콘텐츠 --- */
+      .welcome-header {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        gap: 0.75rem;
+        padding-top: 0;
+        padding-bottom: 0.25rem;
+      }
+      .welcome-text-container {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+        min-width: 18rem;
+      }
+      .welcome-title {
+        font-size: 1.75rem;
+        font-weight: 700;
+        letter-spacing: 0.025em;
+        margin: 0;
+      }
+      .welcome-subtitle {
+        font-size: 0.875rem;
+        color: #9fa3b7;
+      }
+
+      /* --- 오늘의 팁 섹션 --- */
+      .tip-section-container {
+        display: flex;
+        gap: 1.5rem;
+        border-radius: 0.75rem;
+        padding: 1.5rem;
+        align-items: stretch;
+        background: linear-gradient(105deg, #2d3748 0%, #1a202c 100%);
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        min-height: 280px;
+      }
+      .tip-image-container {
+        flex: 1.5;
+        display: flex;
+      }
+      .tip-image {
+        width: 100%;
+        height: 100%;
+        border-radius: 0.75rem;
+        object-fit: cover;
+        border: 3px solid #4a5568;
+      }
+      .tip-content {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: 1.25rem;
+      }
+      .tip-item .tip-title {
+        font-size: 1.125rem;
+        font-weight: 800;
+        margin-bottom: 0.75rem;
+        color: #e2e8f0;
+        letter-spacing: 0.025em;
+      }
+      .tip-item .tip-text {
+        font-size: 1rem;
+        color: #a0aec0;
+        line-height: 1.6;
+      }
+
+      /* --- Weekly Summary --- */
+      .summary-grid {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+      }
+      .summary-card {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        padding: 1.5rem;
+        border: 1px solid #3d4151;
+        border-radius: 0.75rem;
+        min-width: 158px;
+      }
+      .summary-card .label {
+        font-size: 1rem;
+        font-weight: 500;
+      }
+      .summary-card .value {
+        font-size: 1.5rem;
+        font-weight: 700;
+        letter-spacing: 0.025em;
+      }
+      .summary-card .change {
+        font-size: 1rem;
+        font-weight: 500;
+        color: #0bda65;
+      }
+
+      /* --- 기본 레이아웃 --- */
+      :root {
+        .header-right { display: flex; align-items: center; gap: 0.75rem; }
+        .icon-button { background: none; border: none; padding: 0.5rem; color: #f0f0f0; cursor: pointer; position: relative; }
+        .notification-badge {
+            position: absolute;
+            top: 4px;
+            left: 4px;
+            width: 8px;
+            height: 8px;
+            background-color: #ff3b30;
+            border-radius: 50%;
+            border: 1.5px solid #1e1f25; /* 헤더 배경색과 일치시켜 깔끔하게 보이도록 함 */
+        }
+        .profile-image { width: 2.5rem; height: 2.5rem; border-radius: 50%; background-size: cover; background-position: center; }
+        .main-content { padding: 1.5rem; }
+      }
+
+    </style>
+  </head>
+  <body>
+    <div class="design-root">
+      <div class="layout-container">
+        <header class="main-header">
+          <div class="logo-container">
+            <div class="logo-icon">
+              <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect width="48" height="48" rx="12" fill="#4F46E5"/>
+                <path d="M14 24L22 32L34 16" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M14 24L22 32L34 16" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" opacity="0.3"/>
+              </svg>
+            </div>
+            <h2 class="logo-title">Momentum</h2>
+          </div>
+          <div class="header-nav">
+            <div class="nav-links">
+              <a href="./home.html">홈</a>
+              <a href="./calender.html">캘린더</a>
+              <a href="./todo-list.html">오늘 할 일</a>
+            </div>
+            <button class="header-button" id="notification-bell-button">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20px" height="20px" fill="currentColor" viewBox="0 0 256 256">
+                <path
+                  d="M221.8,175.94C216.25,166.38,208,139.33,208,104a80,80,0,1,0-160,0c0,35.34-8.26,62.38-13.81,71.94A16,16,0,0,0,48,200H88.81a40,40,0,0,0,78.38,0H208a16,16,0,0,0,13.8-24.06ZM128,216a24,24,0,0,1-22.62-16h45.24A24,24,0,0,1,128,216ZM48,184c7.7-13.24,16-43.92,16-80a64,64,0,1,1,128,0c0,36.05,8.28,66.73,16,80Z"
+                ></path>
+              </svg>
+            </button>
+            <div id="profile-image-container" class="profile-image"></div>
+          </div>
+        </header>
+        <div class="main-content">
+          <div class="content-container">
+            <div class="welcome-header section-padding">
+              <div class="welcome-text-container">
+                <p class="welcome-title">다시 오신 것을 환영합니다!</p>
+              </div>
+            </div>
+            <h3 class="section-title">오늘의 팁</h3>
+            <div class="section-padding">
+              <div class="tip-section-container">
+                <div class="tip-image-container">
+                  <img src="assets/natural-6693234.jpg" alt="Winter workout" class="tip-image">
+                </div>
+                <div class="tip-content">
+                  <div id="planning-tip" class="tip-item">
+                    <p class="tip-title">계획 수립 팁</p>
+                    <p class="tip-text"></p>
+                  </div>
+                  <div id="adherence-tip" class="tip-item">
+                    <p class="tip-title">계획을 잘 지키는 팁</p>
+                    <p class="tip-text"></p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <h3 class="section-title">2주간 요약</h3>
+            <div class="summary-grid section-padding">
+              <div class="summary-card">
+                <p class="label">완료된 계획</p>
+                <p class="value" id="completed-plans-value">0</p>
+                <p class="change" id="completed-plans-change">0%</p>
+              </div>
+              <div class="summary-card">
+                <p class="label">예정된 계획</p>
+                <p class="value" id="upcoming-plans-value">0</p>
+                <p class="change" id="upcoming-plans-change">-</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script src="./assets/js/home.js"></script>
+    <script src="js/notifications.js"></script>
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        // 프로필 정보 로드
+        fetch('./data/profile.json')
+          .then(response => response.json())
+          .then(data => {
+            const welcomeTitle = document.querySelector('.welcome-title');
+            welcomeTitle.textContent = `다시 오신 것을 환영합니다, ${data.name}님!`;
+            
+            const profileImageContainer = document.getElementById('profile-image-container');
+            if (data.profileImageUrl) {
+                profileImageContainer.style.backgroundImage = `url('${data.profileImageUrl}')`;
+            }
+            profileImageContainer.addEventListener('click', () => {
+                window.location.href = './profile.html';
+            });
+          })
+          .catch(error => console.error('Error loading profile data:', error));
+
+        const planningTips = [
+          "SMART 목표 설정: 구체적이고(Specific), 측정 가능하며(Measurable), 달성 가능하고(Achievable), 관련성 있으며(Relevant), 시간 기반(Time-bound)의 목표를 세워보세요. '살빼기'보다는 '3개월 안에 5kg 감량하기'가 좋습니다.",
+          "작게 시작하기: 매일 10분씩 가벼운 스트레칭으로 시작해보세요. 작은 성공이 모여 큰 성취감을 주고, 꾸준히 운동하는 습관을 만들어줍니다.",
+          "일정에 운동 시간 포함하기: 운동을 '시간이 나면 하는 것'이 아니라, 중요한 약속처럼 캘린더에 미리 표시해두세요.",
+          "다양한 운동 계획하기: 매일 같은 운동만 하면 지루해지기 쉽습니다. 유산소, 근력, 유연성 운동을 조화롭게 섞어 주간 계획을 세워보세요.",
+          "준비물 미리 챙기기: 다음 날 입을 운동복, 운동화, 물통 등을 미리 챙겨두면 귀찮은 마음이 들어도 바로 시작할 수 있습니다."
+        ];
+
+        const adherenceTips = [
+          "운동 일지 작성하기: 운동한 날짜, 시간, 종류, 느낌 등을 간단히 기록해보세요. 자신의 노력을 시각적으로 확인하며 동기 부여를 받을 수 있습니다.",
+          "친구와 함께하기: 친구나 가족과 함께 운동 계획을 공유하고 서로 응원해주세요. 가벼운 경쟁심과 책임감이 계획을 지키는 데 도움이 됩니다.",
+          "스스로에게 보상하기: 목표를 달성했을 때, 평소 갖고 싶었던 운동 용품을 사거나, 좋아하는 영화를 보는 등 스스로에게 작은 선물을 해보세요.",
+          "'완벽'보다 '완주'에 집중하기: 피곤하거나 바쁜 날에는 계획한 만큼 운동하지 못할 수도 있습니다. 짧은 시간이라도 운동을 했다는 사실에 의의를 두고 꾸준함을 유지하는 것이 더 중요합니다.",
+          "긍정적인 마음 갖기: 운동을 귀찮은 숙제라고 생각하기보다, 건강해지는 나를 위한 즐거운 투자라고 생각해보세요. 긍정적인 마음가짐은 꾸준함을 만드는 가장 큰 원동력입니다."
+        ];
+
+        const randomPlanningTip = planningTips[Math.floor(Math.random() * planningTips.length)];
+        const randomAdherenceTip = adherenceTips[Math.floor(Math.random() * adherenceTips.length)];
+
+        document.querySelector('#planning-tip .tip-text').textContent = randomPlanningTip;
+        document.querySelector('#adherence-tip .tip-text').textContent = randomAdherenceTip;
+
+        // 2주간 요약 데이터 계산
+        fetch('./data/workouts.json')
+          .then(response => response.json())
+          .then(data => {
+            const workouts = data.workouts;
+            // 실제 오늘 날짜 사용
+            const today = new Date().setHours(0, 0, 0, 0);
+
+            // 1. 지난 2주간 완료된 계획 계산
+            let totalPlansLast2Weeks = 0;
+            let completedPlansLast2Weeks = 0;
+            for (let i = 0; i < 14; i++) {
+              const date = new Date(today);
+              date.setDate(today.getDate() - i);
+              const dateString = date.toISOString().split('T')[0];
+
+              if (workouts[dateString]) {
+                totalPlansLast2Weeks += workouts[dateString].length;
+                workouts[dateString].forEach(plan => {
+                  if (plan.todolist) {
+                    completedPlansLast2Weeks++;
+                  }
+                });
+              }
+            }
+
+            const completionRate = totalPlansLast2Weeks > 0 ? (completedPlansLast2Weeks / totalPlansLast2Weeks) * 100 : 0;
+            document.getElementById('completed-plans-value').textContent = completedPlansLast2Weeks;
+            document.getElementById('completed-plans-change').textContent = Math.round(completionRate) + '%';
+            
+            // 2. 예정된 계획 계산
+            let upcomingPlansCount = 0;
+            let nearestPlan = null;
+
+            const sortedDateKeys = Object.keys(workouts).sort();
+
+            for (const dateString of sortedDateKeys) {
+                const planDate = new Date(dateString);
+                // 오늘 날짜보다 미래의 계획만 확인
+                if (planDate >= today) {
+                    const plansOnDay = workouts[dateString].filter(p => new Date(`${p.startDate}T${p.startTime}`) >= today);
+                    upcomingPlansCount += plansOnDay.length;
+                    
+                    for(const plan of plansOnDay) {
+                        const planDateTime = new Date(`${plan.startDate}T${plan.startTime}`);
+                        if (!nearestPlan || planDateTime < new Date(`${nearestPlan.startDate}T${nearestPlan.startTime}`)) {
+                            nearestPlan = plan;
+                        }
+                    }
+                }
+            }
+
+            document.getElementById('upcoming-plans-value').textContent = upcomingPlansCount;
+            if (nearestPlan) {
+              const nearestDateTime = `${nearestPlan.startDate} ${nearestPlan.startTime.substring(0, 5)}`;
+              document.getElementById('upcoming-plans-change').textContent = nearestDateTime;
+            } else {
+              document.getElementById('upcoming-plans-change').textContent = '예정 없음';
+            }
+          })
+          .catch(error => console.error('Error loading workout data:', error));
+      });
+    </script>
+  </body>
+</html>

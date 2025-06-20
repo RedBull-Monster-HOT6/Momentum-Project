@@ -1,0 +1,15 @@
+{
+  "name": "workout-planner-server",
+  "version": "1.0.0",
+  "description": "A simple server to handle profile data.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  }
+} 
